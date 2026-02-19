@@ -20,14 +20,16 @@ export type LoginApiResponse = {
   };
 };
 
-
 export type AuthState = {
   user: User | null;
   loading: boolean;
+  loginTime: number | null;
 
   hydrate: () => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   setUser: (user: User | null) => void;
-};
 
+  forceLogout: () => void;
+  startExpiryTimer: () => void;
+};

@@ -400,7 +400,7 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
                   <p className="font-medium text-gray-900 text-xs leading-relaxed">
                     <Link
                       className="text-pink-600"
-                      href={`/shop/category/${product.category.slug}`}
+                      href={`/shop?page=1&category_id=${product.category.id}`}
                     >
                       {product.category.name}
                     </Link>
@@ -546,31 +546,27 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
         </div>
 
         {/* Related Products */}
-        <div className="max-w-7xl mx-auto mt-12">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">
-              Related Products
-            </h2>
-            <Link
-              href="/shop"
-              className="text-pink-600 hover:text-pink-700 font-semibold flex items-center gap-2 group cursor-pointer"
-            >
-              View All
-              <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-          {relatedProduct.length > 0 ? (
+        {relatedProduct.length > 0 && (
+          <div className="max-w-7xl mx-auto mt-12">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">
+                Related Products
+              </h2>
+              <Link
+                href="/shop"
+                className="text-pink-600 hover:text-pink-700 font-semibold flex items-center gap-2 group cursor-pointer"
+              >
+                View All
+                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedProduct?.map((product, index) => (
                 <ProductCard key={index} product={product} wishlisted={false} />
               ))}
             </div>
-          ) : (
-            <p className="text-center capitalize text-gray-500 text-sm font-medium">
-              no related products
-            </p>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

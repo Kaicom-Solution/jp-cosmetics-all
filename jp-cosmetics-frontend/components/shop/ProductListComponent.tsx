@@ -77,14 +77,14 @@ const ProductListComponent = ({
     <div className="bg-gradient-to-b from-pink-50/30 to-white min-h-screen">
       <div className="px-[5%] py-8 lg:py-12">
         
-        <div className="mb-8">
+        <div className="mb-8 text-center">
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent mb-2">
             Shop All Products
           </h1>
           <p className="text-gray-600">Discover our exclusive collection of premium beauty products</p>
         </div>
 
-        <div className="flex items-center justify-between mb-6 gap-4">
+        <div className="flex items-center justify-between lg:mb-6 gap-4">
           <button
             onClick={() => setMobileFiltersOpen(true)}
             className="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-white border-2 border-gray-200 rounded-xl hover:border-pink-400 transition-colors"
@@ -98,7 +98,7 @@ const ProductListComponent = ({
             )}
           </button>
 
-          <div className="text-sm text-gray-600 font-medium">
+          <div className="text-sm text-gray-600 font-medium hidden lg:block">
             <span className="font-semibold text-gray-900">{paginationData.total}</span> products found
           </div>
 
@@ -117,6 +117,10 @@ const ProductListComponent = ({
             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
           </div>
         </div>
+
+        <div className="text-sm text-gray-600 font-medium lg:hidden mt-2 mb-6">
+            <span className="font-semibold text-gray-900">{paginationData.total}</span> products found
+          </div>
 
         <ActiveFilterTags
           filters={filters}

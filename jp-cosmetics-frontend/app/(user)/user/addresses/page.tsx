@@ -106,7 +106,7 @@ function AddressesSection() {
                   setSelectedAddress(item);
                   setShowEditModal(true);
                 }}
-                onRemove={() => setShowDeleteModal(true)}
+                onRemove={() => {setShowDeleteModal(true) ; setSelectedAddress(item)}}
               />
             ))}
           </div>
@@ -133,7 +133,8 @@ function AddressesSection() {
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDeleteAddress}
-        addressTitle="Home"
+        addressTitle={selectedAddress?.title || ''}
+        isDafault = {selectedAddress?.is_default || 0}
       />
     </>
   );

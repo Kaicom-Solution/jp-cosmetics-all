@@ -18,7 +18,7 @@ const HomeBrands = ({ brands }: { brands: Brand[] }) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
           {brands.map((brand, index) => (
             <Link
               key={brand.id || index}
@@ -34,7 +34,7 @@ const HomeBrands = ({ brands }: { brands: Brand[] }) => {
                 <Image
                   src={brand.logo}
                   alt={brand.name}
-                  className="relative w-full h-auto object-cover group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
+                  className="relative w-full h-auto object-cover  transition-all duration-500 sm:group-hover:scale-110"
                   width={250}
                   height={250}
                 />

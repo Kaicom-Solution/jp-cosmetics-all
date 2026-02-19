@@ -134,14 +134,14 @@ export default function PasswordModal({ isOpen, onClose }: Props) {
           <div className="flex items-center justify-end gap-3 pt-2">
             <button
               onClick={onClose}
-              className="rounded-xl border border-gray-200 px-4 py-2 text-gray-600 hover:bg-gray-100 transition"
+              className="rounded-xl border border-gray-200 px-4 py-2 text-gray-600 hover:bg-gray-100 transition cursor-pointer"
             >
               Cancel
             </button>
 
             <button
               onClick={handleSubmit}
-              className="rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 px-5 py-2 font-semibold text-white shadow-lg shadow-pink-500/30 hover:scale-[1.02] active:scale-[0.98] transition"
+              className="rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 px-5 py-2 font-semibold text-white shadow-lg shadow-pink-500/30 hover:scale-[1.02] active:scale-[0.98] transition cursor-pointer"
             >
               Update Password
             </button>

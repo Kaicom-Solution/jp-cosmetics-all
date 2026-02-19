@@ -17,7 +17,7 @@ export default function HomeProduct({ products }: { products: Product[] }) {
         subText="Add our products to weekly line up"
       />
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
         {products.slice(0,8).map((item, index) => (
           <ProductCard key={index} product={item} wishlisted={false}/>
         ))}
