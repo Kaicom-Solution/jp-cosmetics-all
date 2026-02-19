@@ -72,7 +72,13 @@
             <span class="badge rounded-pill {{ $stBadge }}">{{ ucfirst($order?->status ?? '—') }}</span>
 
             <div class="d-none d-md-block">
-                <button id="printBtn"
+                <a href="{{ route('order.print', $order->id) }}"
+                    target="_blank"
+                    class="btn btn-sm btn-outline-light">
+                        <i class="fa-solid fa-print"></i> Print
+                </a>
+
+                {{-- <button id="printBtn"
                     class="btn btn-sm btn-outline-light"
                     onclick="printSections(['printHeader','shippingSection','productsSection'])"
                     data-bs-toggle="tooltip"
@@ -80,7 +86,7 @@
                     title="Print invoice"
                     disabled>
             <i class="fa-solid fa-print"></i> Print
-            </button>
+            </button> --}}
             </div>
         </div>
     </div>
