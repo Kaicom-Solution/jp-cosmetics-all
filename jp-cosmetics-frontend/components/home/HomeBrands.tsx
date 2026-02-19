@@ -18,7 +18,7 @@ const HomeBrands = ({ brands }: { brands: Brand[] }) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6  gap-6">
           {brands.map((brand, index) => (
             <Link
               key={brand.id || index}
@@ -29,12 +29,12 @@ const HomeBrands = ({ brands }: { brands: Brand[] }) => {
               <div className="absolute inset-0 bg-gradient-to-br from-pink-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-pink-500/5 group-hover:via-purple-500/5 group-hover:to-pink-500/5 rounded-2xl transition-all duration-500"></div>
               
               {/* Logo container */}
-              <div className="relative mb-4 w-40 h-40 flex items-center justify-center">
+              <div className="relative mb-4 w-50 h-50 mx-w-full flex items-center justify-center overflow-clip">
                 <div className="absolute inset-0 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
                 <Image
                   src={brand.logo}
                   alt={brand.name}
-                  className="relative w-full h-auto object-cover  transition-all duration-500 sm:group-hover:scale-110"
+                  className="relative w-full h-auto object-cover transition-all duration-500 scale-110 group-hover:scale-100"
                   width={250}
                   height={250}
                 />
