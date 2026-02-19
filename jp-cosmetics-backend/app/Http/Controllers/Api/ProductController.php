@@ -40,8 +40,12 @@ class ProductController extends Controller
                     ->limit(1)
             ]);
     
+        // if (!empty($categoryId)) {
+        //     $products->where('category_id', (int) $categoryId);
+        // }
         if (!empty($categoryId)) {
-            $products->where('category_id', (int) $categoryId);
+            $categoryIds = array_filter(array_map('intval', explode(',', $categoryId)));
+            $products->whereIn('category_id', $categoryIds);
         }
 
         if (!empty($brandIds)) {
@@ -165,29 +169,57 @@ class ProductController extends Controller
     }
 
     
+    // public function relatedProducts($slug)
+    // {
+    //     $product = Product::with(['category', 'brand'])
+    //         ->where('slug', $slug)
+    //         ->first();
+
+    //     if (!$product) {
+    //         return $this->responseWithError('Product not found', 404);
+    //     }
+
+    //     $related = Product::with(['defaultAttribute'])
+    //         ->where('id', '!=', $product->id)
+    //         ->where(function ($q) use ($product) {
+    //             $q->where('category_id', $product->category_id);
+
+    //             if ($product->brand_id) {
+    //                 $q->orWhere('brand_id', $product->brand_id);
+    //             }
+    //         })
+    //         ->paginate(10);
+
+    //     return $this->responseWithSuccess(
+    //         ProductDetailResource::collection($related)
+    //     );
+    // }
+
     public function relatedProducts($slug)
     {
-        $product = Product::with(['category', 'brand'])
-            ->where('slug', $slug)
-            ->first();
+        $product = Product::where('slug', $slug)->first();
 
         if (!$product) {
             return $this->responseWithError('Product not found', 404);
         }
 
-        $related = Product::with(['defaultAttribute'])
+        // Category না থাকলে empty return করো
+        if (!$product->category_id) {
+            return $this->responseWithSuccess([]);
+        }
+
+        $related = Product::with(['category', 'brand', 'defaultAttribute'])
             ->where('id', '!=', $product->id)
-            ->where(function ($q) use ($product) {
-                $q->where('category_id', $product->category_id);
+            ->where('category_id', $product->category_id)
+            ->where('status', 'active') // active products only (যদি status থাকে)
+            ->limit(8)
+            ->get();
 
-                if ($product->brand_id) {
-                    $q->orWhere('brand_id', $product->brand_id);
-                }
-            })
-            ->paginate(10);
-
+        // return $this->responseWithSuccess(
+        //     ProductDetailResource::collection($related) // lightweight resource
+        // );
         return $this->responseWithSuccess(
-            ProductSearchResource::collection($related)
+            $related->isEmpty() ? null : ProductDetailResource::collection($related)
         );
     }
 
