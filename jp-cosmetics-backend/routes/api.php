@@ -1,16 +1,21 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\BlogController;
 
-use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\BrandController;
-use App\Http\Controllers\Api\OrderController;
-use App\Http\Controllers\Api\SliderController;
-use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\CustomerAuthController;
 use App\Http\Controllers\Api\BusinessSettingController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CouponController;
+use App\Http\Controllers\Api\CustomerAuthController;
+use App\Http\Controllers\Api\FaqController;
+use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\NoticeController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\PromotionPopupController;
+use App\Http\Controllers\Api\SettingController;
+use App\Http\Controllers\Api\SliderController;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
 
@@ -60,6 +65,49 @@ Route::prefix('v1')->group(function () {
         Route::get('/popular/list', [CategoryController::class, 'popularCategories']);
     });
  
+    // Blog API Routes
+    Route::prefix('blogs')->group(function () {
+        // Get all blogs (with pagination)
+        Route::get('/', [BlogController::class, 'index']);
+        
+        // Get featured blogs
+        Route::get('/featured', [BlogController::class, 'featuredBlogs']);
+        
+        // Get blogs by category slug
+        Route::get('/category/{slug}', [BlogController::class, 'blogsByCategory']);
+        
+        // Get single blog by slug
+        Route::get('/{slug}', [BlogController::class, 'show']);
+    });
+
+    // Blog Categories API Routes
+    Route::prefix('blog-categories')->group(function () {
+        // Get all blog categories
+        Route::get('/', [BlogController::class, 'categories']);
+    });
+
+    // Notice API Route
+    Route::get('/notice/live', [NoticeController::class, 'liveNotice']);
+
+    Route::get('/faqs', [FaqController::class, 'index']);
+
+    // Get all settings
+    Route::get('/settings', [SettingController::class, 'index']);
+
+    // Get specific setting by key
+    Route::get('/settings/{key}', [SettingController::class, 'show']);
+
+
+    // Promotion Popup API Route
+    Route::get('/promotion-popup/live', [PromotionPopupController::class, 'livePopup']);
+
+
+
+
+
+
+
+
     Route::group(['prefix' => 'brands', 'as' => 'brands.'], function () {
         Route::get('/', [BrandController::class, 'index']); // List all brands
         Route::get('/{slug}', [BrandController::class, 'show']); // Single brand

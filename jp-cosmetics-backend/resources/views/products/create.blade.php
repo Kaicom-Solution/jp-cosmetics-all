@@ -19,6 +19,7 @@
                     <button type="button" id="removePrimaryImage" class="btn btn-sm btn-light bg-white border position-absolute top-0 end-0 rounded-circle">×</button>
                 </div>
                 <input type="file" accept="image/*" id="primaryImageInput" name="primary_image" class="d-none" />
+                <p class="text-muted bg-green-300">Recommended Size: (337.5 * 256)px Ratio</p>
                 <label for="primaryImageInput" class="btn btn-dark mt-3 w-100">Choose Primary Image</label>
                 @error('primary_image') <div class="text-danger">{{ $message }}</div> @enderror
             </div>

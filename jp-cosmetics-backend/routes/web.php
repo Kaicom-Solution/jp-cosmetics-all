@@ -1,25 +1,33 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BrandController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\SliderController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\WishlistController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BusinessSettingController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FaqController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\NoticeController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PromotionPopupController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SliderController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WishlistController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/do-login', [LoginController::class, 'doLogin'])->name('doLogin');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/', [DashboardController::class, 'showDashboard'])->name('user.dashboard')->middleware('auth');
+Route::get('/dashboard/data', [DashboardController::class, 'dashboardData'])->name('dashboard.data')->middleware('auth');
+
 
 Route::group(['middleware' => ['auth']], function () {
 
@@ -27,6 +35,21 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/profile', [DashboardController::class, 'showProfile'])->name('profile.show');
 
 
+    Route::group(['prefix' => 'analytics', 'as' => 'analytics.'], function () {
+
+        Route::get('/customer-orders',              [AnalyticsController::class, 'customerOrders'])      ->name('customer-orders');
+        Route::get('/customer-orders/data',         [AnalyticsController::class, 'customerOrdersData'])  ->name('customer-orders.data');
+        Route::get('/customer-orders/export',       [AnalyticsController::class, 'customerOrdersExport'])->name('customer-orders.export');
+
+        Route::get('/total-sales',                  [AnalyticsController::class, 'totalSales'])          ->name('total-sales');
+        Route::get('/total-sales/data',             [AnalyticsController::class, 'totalSalesData'])      ->name('total-sales.data');
+        Route::get('/total-sales/export',           [AnalyticsController::class, 'totalSalesExport'])    ->name('total-sales.export');
+
+        Route::get('/product-sales',                [AnalyticsController::class, 'productSales'])        ->name('product-sales');
+        Route::get('/product-sales/data',           [AnalyticsController::class, 'productSalesData'])    ->name('product-sales.data');
+        Route::get('/product-sales/export',         [AnalyticsController::class, 'productSalesExport'])  ->name('product-sales.export');
+
+    });
 
     Route::group(['prefix' => 'roles', 'as' => 'user.roles.','module'=>'Role', 'middleware' => 'auth'], function () {
         Route::get('/', [RoleController::class, 'index'])->name('list');
@@ -56,6 +79,69 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/update/{id}', [CategoryController::class, 'update'])->name('update');
         Route::post('{id}/toggle-status', [CategoryController::class, 'toggleStatus'])->name('toggleStatus');
 
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Blog Category Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::group(['prefix' => 'blog/category', 'as' => 'blog.category.', 'module' => 'blog-category'], function () {
+        Route::get('/', [BlogController::class, 'categoryList'])->name('list');
+        Route::get('/create', [BlogController::class, 'categoryCreate'])->name('create');
+        Route::post('/store', [BlogController::class, 'categoryStore'])->name('store');
+        Route::get('/edit/{id}', [BlogController::class, 'categoryEdit'])->name('edit');
+        Route::post('/update/{id}', [BlogController::class, 'categoryUpdate'])->name('update');
+        Route::post('{id}/toggle-status', [BlogController::class, 'categoryToggleStatus'])->name('toggleStatus');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Blog Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::group(['prefix' => 'blog', 'as' => 'blog.', 'module' => 'blog'], function () {
+        Route::get('/', [BlogController::class, 'list'])->name('list');
+        Route::get('/create', [BlogController::class, 'create'])->name('create');
+        Route::post('/store', [BlogController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [BlogController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [BlogController::class, 'update'])->name('update');
+        Route::post('{id}/toggle-status', [BlogController::class, 'toggleStatus'])->name('toggleStatus');
+        Route::post('{id}/toggle-featured', [BlogController::class, 'toggleFeatured'])->name('toggleFeatured');
+    });
+
+    Route::group(['prefix' => 'notice', 'as' => 'notice.', 'module' => 'notice'], function () {
+        Route::get('/', [NoticeController::class, 'list'])->name('list');
+        Route::get('/create', [NoticeController::class, 'create'])->name('create');
+        Route::post('/store', [NoticeController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [NoticeController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [NoticeController::class, 'update'])->name('update');
+        Route::post('{id}/toggle-status', [NoticeController::class, 'toggleStatus'])->name('toggleStatus');
+        Route::post('{id}/set-live', [NoticeController::class, 'setLive'])->name('setLive');
+    });
+
+    Route::group(['prefix' => 'faq', 'as' => 'faq.', 'module' => 'faq'], function () {
+        Route::get('/', [FaqController::class, 'list'])->name('list');
+        Route::get('/create', [FaqController::class, 'create'])->name('create');
+        Route::post('/store', [FaqController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [FaqController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [FaqController::class, 'update'])->name('update');
+        Route::post('{id}/toggle-status', [FaqController::class, 'toggleStatus'])->name('toggleStatus');
+    });
+
+    // Settings Management Routes
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::put('/settings/{key}', [SettingController::class, 'update'])->name('settings.update');
+
+
+    Route::group(['prefix' => 'promotion-popup', 'as' => 'promotion-popup.', 'module' => 'promotion-popup'], function () {
+        Route::get('/', [PromotionPopupController::class, 'list'])->name('list');
+        Route::get('/create', [PromotionPopupController::class, 'create'])->name('create');
+        Route::post('/store', [PromotionPopupController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [PromotionPopupController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [PromotionPopupController::class, 'update'])->name('update');
+        Route::post('{id}/toggle-status', [PromotionPopupController::class, 'toggleStatus'])->name('toggleStatus');
+        Route::post('{id}/set-live', [PromotionPopupController::class, 'setLive'])->name('setLive');
     });
 
     Route::group(['prefix' => 'brand', 'as' => 'brand.', 'module' => 'brand'], function () {
@@ -98,6 +184,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/edit/{id}', [OrderController::class, 'edit'])->name('edit');
         Route::post('/update/{id}', [OrderController::class, 'update'])->name('update');
         // Route::delete('{id}/destroy', [CustomerController::class, 'destroy'])->name('destroy');
+        Route::get('/print/{id}', [OrderController::class, 'print'])->name('print');
 
     });
 

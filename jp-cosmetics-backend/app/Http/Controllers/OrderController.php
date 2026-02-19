@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
+use Mpdf\Mpdf;
 use App\Models\Order;
-use App\Models\OrderActivity;
 use App\Models\Product;
-use App\Services\StockService;
-use Brian2694\Toastr\Facades\Toastr;
+use App\Models\Customer;
 use Illuminate\Http\Request;
+use App\Models\OrderActivity;
+use App\Services\StockService;
 use Illuminate\Support\Facades\DB;
+use Brian2694\Toastr\Facades\Toastr;
 
 class OrderController extends Controller
 {
@@ -118,4 +119,31 @@ class OrderController extends Controller
         return redirect()->route('order.show', $order->id);
     }
 
+    public function print($id)
+    {
+        $order = Order::with([
+            'customer',
+            'address',
+            'details.product',
+            'details.productAttribute'
+        ])->findOrFail($id);
+
+        $html = view('orders.print', compact('order'))->render();
+
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'margin_top' => 12,
+            'margin_bottom' => 12,
+            'margin_left' => 12,
+            'margin_right' => 12,
+        ]);
+
+        $mpdf->WriteHTML($html);
+
+        return response($mpdf->Output(
+            'Order_'.$order->order_number.'.pdf',
+            'I' // I = inline | D = download
+        ))->header('Content-Type', 'application/pdf');
+    }
 }

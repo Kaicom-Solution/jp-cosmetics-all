@@ -71,6 +71,10 @@
             background: #555;
         }
 
+        #daterange{
+            color: #000;
+        }
+
 
         /* Responsive Adjustments */
         @media (max-width: 768px) {
@@ -110,6 +114,7 @@
             .hamburg {
                 display: block;
             }
+            
         }
     </style>
 
@@ -142,6 +147,7 @@
 
 
     <script src="http://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+ 
 
     <script>
         const sidebar = document.getElementById("sidebar");
@@ -203,6 +209,7 @@
 
     <script src="http://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <script src="http://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
+
 
     @stack('js')
 </body>
