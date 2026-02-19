@@ -64,7 +64,7 @@ export default function Footer({ data }: FooterProps) {
 
             <button
               onClick={subscribe}
-              className="group relative overflow-hidden px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-rose-600 font-semibold text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300"
+              className="group relative overflow-hidden px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-rose-600 font-semibold text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-rose-600 to-pink-700 translate-x-full group-hover:translate-x-0 transition-transform duration-500"></span>
               <span className="relative z-10 flex items-center justify-center gap-2">
@@ -99,34 +99,34 @@ export default function Footer({ data }: FooterProps) {
 
               {/* Social Media */}
               <div className="flex gap-3">
-                <a
+                <Link
                   href={data.facebook_url || "#"}
                   className="group p-3 rounded-full bg-pink-100 text-pink-600 hover:bg-gradient-to-r hover:from-pink-500 hover:to-rose-600 hover:text-white transition-all duration-300 hover:scale-110"
                   target="_blank"
                 >
                   <Facebook className="w-4 h-4" />
-                </a>
-                <a
+                </Link>
+                <Link
                   href={data.instagram_url || "#"}
                   className="group p-3 rounded-full bg-pink-100 text-pink-600 hover:bg-gradient-to-r hover:from-pink-500 hover:to-rose-600 hover:text-white transition-all duration-300 hover:scale-110"
                   target="_blank"
                 >
                   <InstagramIcon className="w-4 h-4" />
-                </a>
-                <a
+                </Link>
+                <Link
                   href={data.twitter_url || "#"}
                   className="group p-3 rounded-full bg-pink-100 text-pink-600 hover:bg-gradient-to-r hover:from-pink-500 hover:to-rose-600 hover:text-white transition-all duration-300 hover:scale-110"
                   target="_blank"
                 >
                   <Twitter className="w-4 h-4" />
-                </a>
-                <a
+                </Link>
+                <Link
                   href={data.youtube_url || "#"}
                   className="group p-3 rounded-full bg-pink-100 text-pink-600 hover:bg-gradient-to-r hover:from-pink-500 hover:to-rose-600 hover:text-white transition-all duration-300 hover:scale-110"
                   target="_blank"
                 >
                   <Youtube className="w-4 h-4" />
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -137,45 +137,38 @@ export default function Footer({ data }: FooterProps) {
                 <span className="absolute -bottom-2 left-0 w-12 h-1 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full"></span>
               </h3>
               <ul className="space-y-3 text-sm font-medium">
+                
                 <li>
-                  <a
-                    href="#"
-                    className="text-gray-600 hover:text-pink-600 hover:translate-x-1 inline-block transition-all duration-300"
-                  >
-                    Help Centre
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-600 hover:text-pink-600 hover:translate-x-1 inline-block transition-all duration-300"
-                  >
-                    Delivery Information
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
+                  <Link
+                    href="/return-policy"
                     className="text-gray-600 hover:text-pink-600 hover:translate-x-1 inline-block transition-all duration-300"
                   >
                     Return Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
+                    href="#"
+                    className="text-gray-600 hover:text-pink-600 hover:translate-x-1 inline-block transition-all duration-300"
+                  >
+                    Shipping Delivery
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     href="#"
                     className="text-gray-600 hover:text-pink-600 hover:translate-x-1 inline-block transition-all duration-300"
                   >
                     Voucher Codes
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    href="/contact"
                     className="text-gray-600 hover:text-pink-600 hover:translate-x-1 inline-block transition-all duration-300"
                   >
                     Contact Us
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -188,45 +181,31 @@ export default function Footer({ data }: FooterProps) {
               </h3>
               <ul className="space-y-3 text-sm font-medium">
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    href="/about-Us"
                     className="text-gray-600 hover:text-pink-600 hover:translate-x-1 inline-block transition-all duration-300"
                   >
                     About Us
-                  </a>
+                  </Link>
                 </li>
+                
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    href="/privacy-policy"
                     className="text-gray-600 hover:text-pink-600 hover:translate-x-1 inline-block transition-all duration-300"
                   >
-                    Corporate Information
-                  </a>
+                    Privacy Policy
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    className="text-gray-600 hover:text-pink-600 hover:translate-x-1 inline-block transition-all duration-300"
-                  >
-                    Privacy & Cookies
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
+                  <Link
+                    href="/terms-Conditions"
                     className="text-gray-600 hover:text-pink-600 hover:translate-x-1 inline-block transition-all duration-300"
                   >
                     Terms & Conditions
-                  </a>
+                  </Link>
                 </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-600 hover:text-pink-600 hover:translate-x-1 inline-block transition-all duration-300"
-                  >
-                    Copyright & Warranties
-                  </a>
-                </li>
+                
               </ul>
             </div>
 
@@ -280,15 +259,13 @@ export default function Footer({ data }: FooterProps) {
               All rights reserved.
             </p>
             <div className="flex items-center gap-6 font-medium">
-              <a href="#" className="hover:text-pink-600 transition-colors">
+              <Link href="#" className="hover:text-pink-600 transition-colors">
                 Privacy Policy
-              </a>
+              </Link>
               <a href="#" className="hover:text-pink-600 transition-colors">
-                Terms of Service
+                Terms & Conditions
               </a>
-              <a href="#" className="hover:text-pink-600 transition-colors">
-                Sitemap
-              </a>
+              
             </div>
           </div>
         </div>

@@ -19,7 +19,7 @@ import {
 import Link from "next/link";
 
 import { useAuthStore } from "@/store/authStore";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { showToast } from "@/utils/toast";
 
@@ -33,6 +33,7 @@ const Login = () => {
 
   const login = useAuthStore((s) => s.login);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -45,7 +46,9 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(formData.email, formData.password);
-      router.push("/user/dashboard");
+      const redirectTo = searchParams.get("redirect") || "/user/dashboard";
+
+      router.push(redirectTo);
     } catch (err) {
       console.error(err);
       showToast.error("Invalid email or password");
@@ -99,7 +102,7 @@ const Login = () => {
             </div>
 
             {/* Decorative Image */}
-            <div className="relative aspect-video bg-gradient-to-br from-pink-200 to-rose-200 rounded-2xl overflow-hidden">
+            {/* <div className="relative aspect-video bg-gradient-to-br from-pink-200 to-rose-200 rounded-2xl overflow-hidden">
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
                   <Sparkles className="w-20 h-20 text-white opacity-50 mx-auto mb-4" />
@@ -108,7 +111,7 @@ const Login = () => {
                   </p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -126,14 +129,13 @@ const Login = () => {
             </div>
 
             {/* Social Login Buttons */}
-            <div className="space-y-3 mb-6">
+            {/* <div className="space-y-3 mb-6">
               <button className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-300 rounded-xl hover:border-pink-500 hover:bg-pink-50 transition-all font-semibold text-gray-700 cursor-pointer">
                 <Chrome className="w-5 h-5" />
                 Continue with Google
               </button>
             </div>
 
-            {/* Divider */}
             <div className="relative mb-6">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-300"></div>
@@ -143,7 +145,7 @@ const Login = () => {
                   Or continue with email
                 </span>
               </div>
-            </div>
+            </div> */}
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -187,6 +189,7 @@ const Login = () => {
                     value={formData.password}
                     onChange={handleChange}
                     required
+                    min={6}
                     className="w-full pl-12 pr-12 py-3 border-2 border-gray-300 rounded-xl focus:border-pink-500 focus:outline-none transition-colors"
                     placeholder="Enter your password"
                   />

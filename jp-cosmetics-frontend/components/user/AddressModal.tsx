@@ -1,9 +1,9 @@
 import { X, MapPin, AlertTriangle } from "lucide-react";
-import { useState ,useEffect  } from "react";
+import { useState, useEffect } from "react";
 
 import { useAuthStore } from "@/store/authStore";
 
-import type { AddressPayload , Address } from "@/types/user";
+import type { AddressPayload, Address } from "@/types/user";
 
 interface AddressModalProps {
   isOpen: boolean;
@@ -13,21 +13,14 @@ interface AddressModalProps {
 }
 
 // Address Form Modal Component
-export function AddressModal({ isOpen, onClose, onSave, address = null }: AddressModalProps) {
-  const user = useAuthStore().user
+export function AddressModal({
+  isOpen,
+  onClose,
+  onSave,
+  address = null,
+}: AddressModalProps) {
+  const user = useAuthStore().user;
   const [formData, setFormData] = useState<AddressPayload>({
-    title: address?.title || "",
-    name: address?.name || "",
-    address: address?.address || "",
-    phone: address?.phone || user?.phone || "" ,
-    city:address?.city || "",
-    area:address?.area || '',
-    is_default: address?.is_default ? 1 : 0,
-    status:1,
-  });
-
-useEffect(() => {
-  setFormData({
     title: address?.title || "",
     name: address?.name || "",
     address: address?.address || "",
@@ -35,23 +28,55 @@ useEffect(() => {
     city: address?.city || "",
     area: address?.area || "",
     is_default: address?.is_default ? 1 : 0,
-    status: address?.status || 1,
+    status: 1,
   });
-}, [address, user?.phone]);
+
+  useEffect(() => {
+    setFormData({
+      title: address?.title || "",
+      name: address?.name || "",
+      address: address?.address || "",
+      phone: address?.phone || user?.phone || "",
+      city: address?.city || "",
+      area: address?.area || "",
+      is_default: address?.is_default ? 1 : 0,
+      status: address?.status || 1,
+    });
+  }, [address, user?.phone]);
 
   if (!isOpen) return null;
 
   const handleSubmit = () => {
     onSave(formData);
     onClose();
+    setFormData({
+      title: "",
+      name: "",
+      address: "",
+      phone: address?.phone || user?.phone || "",
+      city: "",
+      area: "",
+      is_default: 0,
+      status: address?.status || 1,
+    });
   };
 
-  const handleChange = (e : any) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value
-    }));
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value, type } = e.target;
+
+    if (type === "checkbox") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: (e.target as HTMLInputElement).checked ? 1 : 0,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   return (
@@ -134,7 +159,8 @@ useEffect(() => {
               placeholder="Enter your Area"
               className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
             />
-          </div><div>
+          </div>
+          <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               City
             </label>
@@ -147,7 +173,6 @@ useEffect(() => {
               className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
             />
           </div>
-          
 
           {/* Phone */}
           <div>
@@ -170,11 +195,14 @@ useEffect(() => {
               type="checkbox"
               name="is_default"
               id="is_default"
-              checked={formData.is_default == 1} 
+              checked={formData.is_default == 1}
               onChange={handleChange}
               className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
             />
-            <label htmlFor="is_default" className="text-sm font-medium text-gray-700 cursor-pointer">
+            <label
+              htmlFor="is_default"
+              className="text-sm font-medium text-gray-700 cursor-pointer"
+            >
               Set as default address
             </label>
           </div>

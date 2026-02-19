@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { showToast } from "@/utils/toast";
+
 import { TruckElectric, HandCoins, X } from "lucide-react";
 import { OrderDetailResponse } from "@/types/user";
 import { orderService } from "@/services/user.service";
@@ -46,7 +48,8 @@ export const OrderDetailsModal = ({
         const data = await orderService.detail(selectedOrderId);
         setOrderDetails(data);
       } catch (error) {
-        console.error("Failed to fetch order details", error);
+        // console.error("Failed to fetch order details", error);
+        showToast.error(`failed to get order details`);
       } finally {
         setLoading(false);
       }

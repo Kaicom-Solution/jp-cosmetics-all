@@ -187,3 +187,12 @@ export interface PaginationData {
   to: number;
   total: number;
 }
+
+
+// export interface RelatedProduct {
+//   id: number;
+//   name: string;
+//   slug: string;
+//   price: number;
+//   image: string;
+// }

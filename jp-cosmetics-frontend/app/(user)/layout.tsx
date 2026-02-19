@@ -57,13 +57,13 @@ export default function UserLayout({
     url: "/user/wishlist",
   },
   { id: "addresses", label: "Addresses", icon: MapPin, url: "/user/addresses" },
-  {
-    id: "rewards",
-    label: "Rewards",
-    icon: Gift,
-    badge: dashboard?.reward_points || null ,
-    url: "/user/rewards",
-  },
+  // {
+  //   id: "rewards",
+  //   label: "Rewards",
+  //   icon: Gift,
+  //   badge: dashboard?.reward_points || null ,
+  //   url: "/user/rewards",
+  // },
   { id: "settings", label: "Settings", icon: Settings, url: "/user/settings" },
 ];
 
