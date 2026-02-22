@@ -23,6 +23,7 @@ export default function PasswordModal({ isOpen, onClose }: Props) {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
 
@@ -31,6 +32,7 @@ export default function PasswordModal({ isOpen, onClose }: Props) {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     if (form.new_password !== form.new_password_confirmation) {
       showToast.error(`Password didnot match`);
       return;
@@ -41,6 +43,8 @@ export default function PasswordModal({ isOpen, onClose }: Props) {
       onClose();
     } catch (err) {
       showToast.error(`failed to update password`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -143,7 +147,7 @@ export default function PasswordModal({ isOpen, onClose }: Props) {
               onClick={handleSubmit}
               className="rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 px-5 py-2 font-semibold text-white shadow-lg shadow-pink-500/30 hover:scale-[1.02] active:scale-[0.98] transition cursor-pointer"
             >
-              Update Password
+              {loading ? "Updating .." : "Update Password"}
             </button>
           </div>
         </div>

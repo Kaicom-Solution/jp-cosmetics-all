@@ -7,7 +7,9 @@ import {
   Bell,
   Gift,
   ChevronRight,
+  LoaderCircle,
 } from "lucide-react";
+
 import StatCard from "./StatCard";
 import OrderCard from "./OrderCard";
 import QuickActionCard from "./QuickActionCard";
@@ -17,6 +19,7 @@ import { showToast } from "@/utils/toast";
 
 import { dashboardService, orderService } from "@/services/user.service";
 import { DashboardResponse, Order } from "@/types/user";
+import UserLoader from "./UserLoader";
 
 export default function DashboardComponent() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -56,6 +59,8 @@ export default function DashboardComponent() {
 
   return (
     <div className="space-y-6">
+      {loading && <UserLoader />}
+      
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
