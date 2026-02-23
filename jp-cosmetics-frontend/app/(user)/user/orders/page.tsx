@@ -7,6 +7,7 @@ import type { Order } from "@/types/user";
 import { TruckElectric, HandCoins, X } from "lucide-react";
 
 import { formatDate } from "@/utils/formatDate";
+import { showToast } from "@/utils/toast";
 
 import { OrderDetailsModal } from "@/components/user/OrderDetailsModal";
 
@@ -36,7 +37,8 @@ export default function OrdersSection() {
         const data = await orderService.list();
         setOrders(data);
       } catch (error) {
-        console.error("Failed to fetch orders", error);
+        // console.error("Failed to fetch orders", error);
+        showToast.error(`failed to get order list`);
       } finally {
         setLoading(false);
       }

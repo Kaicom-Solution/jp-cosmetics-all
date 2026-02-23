@@ -13,16 +13,15 @@ import OrderCard from "./OrderCard";
 import QuickActionCard from "./QuickActionCard";
 import { useEffect, useState } from "react";
 
-import { orderService } from "@/services/user.service";
-import type { Order } from "@/types/user";
-import { dashboardService } from "@/services/user.service";
-import { DashboardResponse } from "@/types/user";
+import { showToast } from "@/utils/toast";
+
+import { dashboardService, orderService } from "@/services/user.service";
+import { DashboardResponse, Order } from "@/types/user";
 
 export default function DashboardComponent() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -30,7 +29,8 @@ export default function DashboardComponent() {
         const data = await orderService.list();
         setOrders(data);
       } catch (error) {
-        console.error("Failed to fetch orders", error);
+        // console.error("Failed to fetch orders", error);
+        showToast.error(`failed to get order list`);
       } finally {
         // setLoading(false);
       }
@@ -42,8 +42,8 @@ export default function DashboardComponent() {
         const data = await dashboardService.fetch();
         setDashboard(data);
       } catch (err) {
-        console.error(err);
-        setError("Failed to load dashboard");
+        // console.error(err);
+        showToast.error(`failed to get dashboard data`);
       } finally {
         setLoading(false);
       }
@@ -106,7 +106,7 @@ export default function DashboardComponent() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <QuickActionCard
           icon={Bell}
           title="Notifications"
@@ -119,7 +119,7 @@ export default function DashboardComponent() {
           description="Exclusive deals just for you"
           action="Browse"
         />
-      </div>
+      </div> */}
     </div>
   );
 }

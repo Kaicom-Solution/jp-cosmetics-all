@@ -124,7 +124,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       className={`group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 cursor-pointer ${className}`}
     >
       {/* Image Container */}
-      <div className="relative h-64 md:h-72 overflow-hidden bg-gray-100">
+      <div className="relative h-64 w-full max-w-[666px] mx-auto overflow-hidden bg-gray-100">
         {/* Gradient Overlay on Hover */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
 
@@ -259,7 +259,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           {/* Mobile Add to Cart Icon */}
           <button
             onClick={handleAddToCart}
-            className="lg:hidden p-2 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-full hover:from-pink-600 hover:to-rose-700 transition-all hover:scale-110 active:scale-95 shadow-md"
+            className="lg:hidden p-2 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-full hover:from-pink-600 hover:to-rose-700 transition-all hover:scale-110 active:scale-95 shadow-md cursor-pointer"
             aria-label="Add to cart"
           >
             <ShoppingCart className="w-5 h-5" />

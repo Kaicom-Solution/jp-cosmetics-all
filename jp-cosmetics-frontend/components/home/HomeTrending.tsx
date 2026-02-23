@@ -17,7 +17,7 @@ const HomeTrending = ({ products }: { products: Product[] }) => {
     initial: 0,
     slides: {
       perView: 5,
-      spacing: 16,
+      spacing: 32,
     },
     slideChanged(slider) {
       setCurrentSlide(slider.track?.details?.rel ?? 0);
@@ -27,17 +27,17 @@ const HomeTrending = ({ products }: { products: Product[] }) => {
     },
     // Breakpoints for responsiveness
     breakpoints: {
+      "(max-width: 1536px)": {
+        slides: { perView: 4, spacing: 32 },
+      },
       "(max-width: 1280px)": {
-        slides: { perView: 3.5, spacing: 16 },
+        slides: { perView: 3, spacing: 32 },
       },
       "(max-width: 1024px)": {
-        slides: { perView: 2.5, spacing: 12 },
-      },
-      "(max-width: 768px)": {
-        slides: { perView: 2, spacing: 10 },
+        slides: { perView: 2, spacing: 32 },
       },
       "(max-width: 680px)": {
-        slides: { perView: 1, spacing: 10 },
+        slides: { perView: 1, spacing: 32 },
       },
     },
   });

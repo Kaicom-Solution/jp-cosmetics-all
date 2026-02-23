@@ -28,7 +28,7 @@ const DesktopFilters = ({
         {activeFiltersCount > 0 && (
           <button
             onClick={onClearAll}
-            className="text-xs text-pink-600 hover:text-pink-700 font-semibold"
+            className="text-xs text-pink-600 hover:text-pink-700 font-semibold cursor-pointer"
           >
             Clear
           </button>

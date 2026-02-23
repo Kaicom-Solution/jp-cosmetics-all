@@ -17,9 +17,12 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useCartStore } from "@/store/cart-store";
+import { useAuthStore } from "@/store/authStore";
+
 
 const Cart = () => {
   const { items, updateQuantity, removeItem } = useCartStore();
+  const user = useAuthStore().user
 
   const [promoCode, setPromoCode] = useState("");
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
@@ -109,16 +112,16 @@ const Cart = () => {
 
                   <div className="flex-1">
                     <div className="flex justify-between">
-                      <h3 className="font-bold text-lg">
+                      <h3 className="font-bold text-lg w-[calc(100%-40px)]">
                         {item.product_name} ({item.attribute_value})
                       </h3>
                       <button
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:bg-pink-50 rounded-full duration-300 active:scale-75 size-9 flex items-center justify-center"
                         onClick={() =>
                           removeItem(item.product_id, item.product_attribute_id)
                         }
                       >
-                        <Trash2 className="text-red-500" />
+                        <Trash2 className="text-red-500 size-6" />
                       </button>
                     </div>
 
@@ -133,7 +136,7 @@ const Cart = () => {
                     {/* Quantity */}
                     <div className="flex items-center gap-3 mt-4">
                       <button
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:bg-pink-100 rounded-full hover:text-pink-600 duration-300 active:scale-75"
                         onClick={() =>
                           updateQuantity(
                             item.product_id,
@@ -146,10 +149,10 @@ const Cart = () => {
                         <Minus />
                       </button>
 
-                      <span className="font-bold">{item.quantity}</span>
+                      <p className="font-bold w-10 text-center">{item.quantity}</p>
 
                       <button
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:bg-pink-100 rounded-full hover:text-pink-600 duration-300 active:scale-75"
                         onClick={() =>
                           updateQuantity(
                             item.product_id,
@@ -201,7 +204,7 @@ const Cart = () => {
                       setPromoCode("");
                     }
                   }}
-                  className="bg-black text-white px-4 rounded-xl"
+                  className="bg-black text-white px-4 rounded-xl active:scale-95 hover:bg-pink-700 duration-300 cursor-pointer"
                 >
                   Apply
                 </button>

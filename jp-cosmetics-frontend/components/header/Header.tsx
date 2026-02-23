@@ -178,7 +178,7 @@ export default function Header({ data }: HeaderProps) {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 text-gray-600 hover:text-pink-600 transition-colors"
+              className="lg:hidden p-2 text-gray-600 hover:text-pink-600 transition-colors cursor-pointer"
             >
               {mobileMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -260,7 +260,7 @@ export default function Header({ data }: HeaderProps) {
           <div className="min-h-screen flex items-start justify-center p-4 pt-20">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[80vh] flex flex-col animate-in slide-in-from-top duration-300">
               {/* Modal Header */}
-              <div className="p-6 border-b border-gray-100">
+              <div className="p-6 border-b border-gray-100 relative">
                 <div className="flex items-center gap-4">
                   <div className="flex-1 relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -269,7 +269,7 @@ export default function Header({ data }: HeaderProps) {
                       placeholder="Search for cosmetics products..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 focus:bg-white transition-all text-gray-700"
+                      className="w-full pl-12 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 focus:bg-white transition-all text-gray-700 text-sm md:text-base"
                       autoFocus
                     />
                   </div>
@@ -278,9 +278,9 @@ export default function Header({ data }: HeaderProps) {
                       setSearchOpen(false);
                       setSearchQuery("");
                     }}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                    className="p-2 bg-pink-600  rounded-full shadow-md hover:rotate-90 duration-300 cursor-pointer absolute top-2 right-2"
                   >
-                    <X className="w-6 h-6 text-gray-600" />
+                    <X className="size-5 md:size-6 text-white" />
                   </button>
                 </div>
               </div>

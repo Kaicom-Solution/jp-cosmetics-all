@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 
 import { useAuthStore } from "@/store/authStore";
+import { showToast } from "@/utils/toast";
 
 import AddressCard from "@/components/user/AddressCard";
 import { AddressModal } from "@/components/user/AddressModal";
@@ -22,7 +23,7 @@ function AddressesSection() {
   const user = useAuthStore().user;
 
   const handleSaveAddress = async (data: AddressPayload) => {
-    console.log("Saved address:", data);
+    // console.log("Saved address:", data);
 
     try {
       if (showAddModal) {
@@ -32,11 +33,15 @@ function AddressesSection() {
         const res = await addressService.update(selectedAddress.id, data);
       }
       fetchAddress();
-    } catch (error) {
-      console.error(
-        `Failed to ${showAddModal ? "add " : "update"} address`,
-        error
+      showToast.success(
+        `Address ${showAddModal ? "add " : "update"} successfully`,
       );
+    } catch (error) {
+      // console.error(
+      //   `Failed to ${showAddModal ? "add " : "update"} address`,
+      //   error
+      // );
+      showToast.error(`Failed to ${showAddModal ? "add " : "update"} address`);
     } finally {
       setLoading(false);
     }
@@ -51,7 +56,8 @@ function AddressesSection() {
       const data = await addressService.list();
       setAddress(data);
     } catch (error) {
-      console.error("Failed to fetch orders", error);
+      // console.error("Failed to fetch orders", error);
+      showToast.error("Failed to fetch address");
     } finally {
       setLoading(false);
     }
@@ -100,7 +106,7 @@ function AddressesSection() {
                   setSelectedAddress(item);
                   setShowEditModal(true);
                 }}
-                onRemove={() => setShowDeleteModal(true)}
+                onRemove={() => {setShowDeleteModal(true) ; setSelectedAddress(item)}}
               />
             ))}
           </div>
@@ -127,7 +133,8 @@ function AddressesSection() {
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDeleteAddress}
-        addressTitle="Home"
+        addressTitle={selectedAddress?.title || ''}
+        isDafault = {selectedAddress?.is_default || 0}
       />
     </>
   );

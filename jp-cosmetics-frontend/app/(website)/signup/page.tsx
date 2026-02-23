@@ -52,30 +52,6 @@ const Signup = () => {
       ...formData,
       [name]: value,
     });
-
-    // Password strength check
-    if (name === "password") {
-      checkPasswordStrength(value);
-    }
-  };
-
-  const checkPasswordStrength = (password: string) => {
-    let score = 0;
-    let feedback = "";
-
-    if (password.length >= 8) score++;
-    if (password.match(/[a-z]/)) score++;
-    if (password.match(/[A-Z]/)) score++;
-    if (password.match(/[0-9]/)) score++;
-    if (password.match(/[^a-zA-Z0-9]/)) score++;
-
-    if (score === 0) feedback = "";
-    else if (score <= 2) feedback = "Weak";
-    else if (score === 3) feedback = "Fair";
-    else if (score === 4) feedback = "Good";
-    else feedback = "Strong";
-
-    setPasswordStrength({ score, feedback });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -149,24 +125,6 @@ const Signup = () => {
           {/* Main Form */}
           <div className="order-2 lg:order-1">
             <div className="bg-white rounded-3xl shadow-2xl p-8 lg:p-10">
-              {/* Social Signup */}
-              {/* <div className="space-y-3 mb-6">
-                <button className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-300 rounded-xl hover:border-pink-500 hover:bg-pink-50 transition-all font-semibold text-gray-700 cursor-pointer">
-                  <Chrome className="w-5 h-5" />
-                  Sign up with Google
-                </button>
-                <div className="grid grid-cols-2 gap-3">
-                  <button className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-300 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition-all font-semibold text-gray-700 cursor-pointer">
-                    <Facebook className="w-5 h-5 text-blue-600" />
-                    Facebook
-                  </button>
-                  <button className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-300 rounded-xl hover:border-gray-900 hover:bg-gray-50 transition-all font-semibold text-gray-700 cursor-pointer">
-                    <Apple className="w-5 h-5" />
-                    Apple
-                  </button>
-                </div>
-              </div> */}
-
               {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-5">
                 {/* Personal Info Fields */}
@@ -192,25 +150,6 @@ const Signup = () => {
                       />
                     </div>
                   </div>
-
-                  {/* <div>
-                    <label htmlFor="last_name" className="block text-sm font-semibold text-gray-900 mb-2">
-                      Last Name *
-                    </label>
-                    <div className="relative">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                      <input
-                        type="text"
-                        id="last_name"
-                        name="last_name"
-                        value={formData.last_name}
-                        onChange={handleChange}
-                        required
-                        className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink-500 focus:outline-none transition-colors"
-                        placeholder="Doe"
-                      />
-                    </div>
-                  </div> */}
                 </div>
 
                 <div>
@@ -272,6 +211,7 @@ const Signup = () => {
                       name="password"
                       value={formData.password}
                       onChange={handleChange}
+                      min={6}
                       required
                       className="w-full pl-12 pr-12 py-3 border-2 border-gray-300 rounded-xl focus:border-pink-500 focus:outline-none transition-colors"
                       placeholder="Create a strong password"
@@ -288,39 +228,6 @@ const Signup = () => {
                       )}
                     </button>
                   </div>
-
-                  {/* Password Strength Indicator */}
-                  {formData.password && (
-                    <div className="mt-2">
-                      <div className="flex gap-1 mb-1">
-                        {[...Array(5)].map((_, i) => (
-                          <div
-                            key={i}
-                            className={`h-1.5 flex-1 rounded ${
-                              i < passwordStrength.score
-                                ? passwordStrength.score <= 2
-                                  ? "bg-red-500"
-                                  : passwordStrength.score === 3
-                                  ? "bg-yellow-500"
-                                  : "bg-green-500"
-                                : "bg-gray-200"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <p
-                        className={`text-xs font-medium ${
-                          passwordStrength.score <= 2
-                            ? "text-red-600"
-                            : passwordStrength.score === 3
-                            ? "text-yellow-600"
-                            : "text-green-600"
-                        }`}
-                      >
-                        Password Strength: {passwordStrength.feedback}
-                      </p>
-                    </div>
-                  )}
                 </div>
 
                 <div>
@@ -339,6 +246,7 @@ const Signup = () => {
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       required
+                      min={6}
                       className="w-full pl-12 pr-12 py-3 border-2 border-gray-300 rounded-xl focus:border-pink-500 focus:outline-none transition-colors"
                       placeholder="Re-enter your password"
                     />
@@ -365,51 +273,23 @@ const Signup = () => {
                     )}
                 </div>
 
-                {/* Password Requirements */}
                 <div className="p-4 bg-gray-50 rounded-xl">
-                  <p className="text-xs font-semibold text-gray-900 mb-2">
-                    Password must contain:
-                  </p>
                   <ul className="space-y-1 text-xs text-gray-600">
                     <li className="flex items-center gap-2">
-                      <CheckCircle
-                        className={`w-3.5 h-3.5 ${
-                          formData.password.length >= 8
-                            ? "text-green-600"
-                            : "text-gray-400"
-                        }`}
-                      />
-                      At least 8 characters
+                      <CheckCircle className={`w-3.5 h-3.5 text-rose-600`} />
+                      Premium Quality
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle
-                        className={`w-3.5 h-3.5 ${
-                          formData.password.match(/[A-Z]/)
-                            ? "text-green-600"
-                            : "text-gray-400"
-                        }`}
-                      />
-                      One uppercase letter
+                      <CheckCircle className={`w-3.5 h-3.5 text-rose-600`} />
+                      Best Prices
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle
-                        className={`w-3.5 h-3.5 ${
-                          formData.password.match(/[0-9]/)
-                            ? "text-green-600"
-                            : "text-gray-400"
-                        }`}
-                      />
-                      One number
+                      <CheckCircle className={`w-3.5 h-3.5 text-rose-600`} />
+                      Gift Voucher
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle
-                        className={`w-3.5 h-3.5 ${
-                          formData.password.match(/[^a-zA-Z0-9]/)
-                            ? "text-green-600"
-                            : "text-gray-400"
-                        }`}
-                      />
-                      One special character
+                      <CheckCircle className={`w-3.5 h-3.5 text-rose-600`} />
+                      Fast Delivery
                     </li>
                   </ul>
                 </div>
@@ -549,7 +429,7 @@ const Signup = () => {
             </div>
 
             {/* Trust Indicators */}
-            <div className="bg-gray-50 rounded-3xl p-6">
+            <div className="bg-gray-50 shadow-lg rounded-3xl p-6">
               <p className="text-xs text-gray-600 text-center mb-3">
                 Trusted by over 50,000+ customers
               </p>

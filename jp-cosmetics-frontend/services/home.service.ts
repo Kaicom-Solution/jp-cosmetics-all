@@ -16,9 +16,9 @@ export const getBusinessInfo = async (): Promise<BusinessInfo> => {
 
 const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-    console.log("here it is");
-    console.log(baseURL);
-    console.log(response);
+    // console.log("here it is");
+    // console.log(baseURL);
+    // console.log(response);
     return response.data?.data;
   } catch (error) {
     // Log at warn level so build logs show context but don't fail the build
