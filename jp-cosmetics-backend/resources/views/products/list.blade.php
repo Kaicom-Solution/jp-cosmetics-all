@@ -34,6 +34,7 @@
         background-color: #28a745;
         border-color: #28a745;
     }
+    .prod-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; }
 </style>
 
 <!-- Flash Messages -->
@@ -50,44 +51,42 @@
     </div>
 @endif
 
-<style>
-    .prod-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; }
-</style>
+
 
 <section class="w-100 bg-white rounded overflow-hidden shadow">
 
     <!-- Header -->
     <div class="py-2.5 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2"
-    style="background-color: rgb(119, 82, 125); color:#ffffff">
+        style="background-color: rgb(119, 82, 125); color:#ffffff">
 
-    <h3 class="text-md m-0">Products</h3>
+        <h3 class="text-md m-0">Products</h3>
 
-    <div class="d-flex align-items-center gap-2 flex-nowrap">
-    <form method="GET" action="{{ route('product.list') }}" class="d-flex align-items-center gap-2 mb-0">
-        <div class="input-group input-group-sm" style="min-width:260px">
-            <input type="text" name="search" value="{{ request('search') }}"
-                    class="form-control"
-                    placeholder="Search by name or category...">
-            <button type="submit" class="btn btn-light fw-semibold" style="color:rgb(69, 85, 203)">
-                <i class="fa-solid fa-filter me-1"></i> Apply
-            </button>
+        <div class="d-flex align-items-center gap-2 flex-nowrap">
+            <form method="GET" action="{{ route('product.list') }}" class="d-flex align-items-center gap-2 mb-0">
+                <div class="input-group input-group-sm" style="min-width:260px">
+                    <input type="text" name="search" value="{{ request('search') }}"
+                            class="form-control"
+                            placeholder="Search by name or category...">
+                    <button type="submit" class="btn btn-light fw-semibold" style="color:rgb(69, 85, 203)">
+                        <i class="fa-solid fa-filter me-1"></i> Apply
+                    </button>
+                </div>
+
+                @if(request('search'))
+                    <a href="{{ route('product.list') }}" class="btn btn-sm btn-outline-danger">
+                        Reset
+                    </a>
+                @endif
+            </form>
+
+            @hasPermission('product.create')
+                <a href="{{ route('product.create') }}" 
+                    class="btn btn-primary btn-sm ms-2"
+                    style="background-color: hsla(227, 64%, 37%, 0.879); white-space:nowrap;">
+                    <i class="fa-solid fa-plus"></i> Create Product
+                </a>
+            @endHasPermission
         </div>
-
-        @if(request('search'))
-            <a href="{{ route('product.list') }}" class="btn btn-sm btn-outline-danger">
-                 Reset
-            </a>
-        @endif
-    </form>
-
-    @hasPermission('product.create')
-    <a href="{{ route('product.create') }}" 
-        class="btn btn-primary btn-sm ms-2"
-        style="background-color: hsla(227, 64%, 37%, 0.879); white-space:nowrap;">
-        <i class="fa-solid fa-plus"></i> Create Product
-    </a>
-    @endHasPermission
-    </div>
     </div>
 
 
@@ -130,6 +129,15 @@
                                 @hasPermission('products.edit')
                                 <a href="{{ route('product.edit', $prod->id) }}" class="flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-medium bg-blue-500 text-white hover:bg-blue-600 shadow-md transition">Edit</a>
                                 @endHasPermission
+                                
+                                {{-- Duplicate Button --}}
+                                <form action="{{ route('product.duplicate', $prod->id) }}" method="POST" 
+                                    onsubmit="return confirm('Duplicate this product?')">
+                                    @csrf
+                                    <button type="submit" class="flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-medium bg-yellow-500 text-white hover:bg-yellow-600 shadow-md transition">
+                                        Duplicate
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>

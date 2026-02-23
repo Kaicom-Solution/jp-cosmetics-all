@@ -7,8 +7,17 @@
         <h3 class="fs-5">Create Product</h3>
         <a href="{{ route('product.list') }}" class="btn btn-outline-light btn-sm">← Back to Products</a>
     </div>
-
-    <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded-bottom">
+    {{-- any error --}}
+    {{-- @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif --}}
+    <form id="productForm" action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded-bottom">
         @csrf
 
         <div class="row g-4">
@@ -350,10 +359,10 @@
         .reduce((m, el) => Math.max(m, parseInt(el.getAttribute('data-attr-row'),10)), -1);
     if (isNaN(idx)) idx = 0;
 
-    document.getElementById('addAttributeBtn').addEventListener('click', () => {
-        idx++;
-        container.insertAdjacentHTML('beforeend', rowHtml(idx));
-    });
+    // document.getElementById('addAttributeBtn').addEventListener('click', () => {
+    //     idx++;
+    //     container.insertAdjacentHTML('beforeend', rowHtml(idx));
+    // });
 
     container.addEventListener('click', e => {
         if (e.target.matches('.btn-remove-attr')) {
@@ -362,23 +371,29 @@
         }
     });
 
-    container.addEventListener('change', e => {
-        if (e.target.matches('.attr-image-input')) {
-            const previewBox = e.target.closest('.attr-row').querySelector('.attr-images-preview');
-            previewBox.innerHTML = '';
-            Array.from(e.target.files).forEach(f => {
-                const r = new FileReader();
-                r.onload = ev => {
-                    const img = document.createElement('img');
-                    img.src = ev.target.result;
-                    img.className = 'rounded border me-2 mb-2';
-                    img.style.width='56px'; img.style.height='56px'; img.style.objectFit='cover';
-                    previewBox.appendChild(img);
-                };
-                r.readAsDataURL(f);
-            });
-        }
+    document.getElementById('addAttributeBtn').addEventListener('click', () => {
+        idx++;
+        container.insertAdjacentHTML('beforeend', rowHtml(idx));
+        initAttrImageManager(container.lastElementChild); // ← এই লাইন ADD করুন
     });
+
+    // container.addEventListener('change', e => {
+    //     if (e.target.matches('.attr-image-input')) {
+    //         const previewBox = e.target.closest('.attr-row').querySelector('.attr-images-preview');
+    //         previewBox.innerHTML = '';
+    //         Array.from(e.target.files).forEach(f => {
+    //             const r = new FileReader();
+    //             r.onload = ev => {
+    //                 const img = document.createElement('img');
+    //                 img.src = ev.target.result;
+    //                 img.className = 'rounded border me-2 mb-2';
+    //                 img.style.width='56px'; img.style.height='56px'; img.style.objectFit='cover';
+    //                 previewBox.appendChild(img);
+    //             };
+    //             r.readAsDataURL(f);
+    //         });
+    //     }
+    // });
 
     function rowHtml(i){
         return `
@@ -517,7 +532,150 @@
         }
     })();
 
+
+    // ============================================
+    // ATTRIBUTE IMAGE MANAGER
+    // ============================================
+    const attrImageStore = {};
+
+    function getAttrIndex(attrRow) {
+        return attrRow.getAttribute('data-attr-row');
+    }
+
+    function renderAttrImages(attrRow) {
+        const idx = getAttrIndex(attrRow);
+        const files = attrImageStore[idx] || [];
+        const previewBox = attrRow.querySelector('.attr-images-preview');
+
+        previewBox.innerHTML = '';
+
+        files.forEach((file, fileIdx) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'attr-img-wrapper';
+            wrapper.style.cssText = 'position:relative; display:inline-block; margin:4px;';
+
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.className = 'rounded border';
+            img.style.cssText = 'width:64px; height:64px; object-fit:cover; display:block;';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.innerHTML = '&times;';
+            removeBtn.style.cssText = `
+                position:absolute; top:-6px; right:-6px;
+                width:20px; height:20px;
+                background:#dc3545; color:#fff; border:none;
+                border-radius:50%; font-size:13px; line-height:1;
+                cursor:pointer; display:none; align-items:center;
+                justify-content:center; padding:0; z-index:10;
+            `;
+            removeBtn.addEventListener('click', () => {
+                attrImageStore[idx].splice(fileIdx, 1);
+                syncFileInput(attrRow);
+                renderAttrImages(attrRow);
+            });
+
+            wrapper.addEventListener('mouseenter', () => removeBtn.style.display = 'flex');
+            wrapper.addEventListener('mouseleave', () => removeBtn.style.display = 'none');
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(removeBtn);
+            previewBox.appendChild(wrapper);
+        });
+
+        // + button
+        const addMoreBtn = document.createElement('div');
+        addMoreBtn.style.cssText = `
+            display:inline-flex; align-items:center; justify-content:center;
+            width:64px; height:64px; border:2px dashed #adb5bd;
+            border-radius:6px; cursor:pointer; font-size:28px; color:#6c757d;
+            margin:4px; vertical-align:top; transition: border-color .15s, color .15s;
+            user-select:none;
+        `;
+        addMoreBtn.title = 'Add more images';
+        addMoreBtn.textContent = '+';
+        addMoreBtn.addEventListener('mouseenter', () => {
+            addMoreBtn.style.borderColor = '#0d6efd';
+            addMoreBtn.style.color = '#0d6efd';
+        });
+        addMoreBtn.addEventListener('mouseleave', () => {
+            addMoreBtn.style.borderColor = '#adb5bd';
+            addMoreBtn.style.color = '#6c757d';
+        });
+        addMoreBtn.addEventListener('click', () => {
+            const tempInput = document.createElement('input');
+            tempInput.type = 'file';
+            tempInput.accept = 'image/*';
+            tempInput.multiple = true;
+            tempInput.addEventListener('change', () => {
+                if (!attrImageStore[idx]) attrImageStore[idx] = [];
+                Array.from(tempInput.files).forEach(f => attrImageStore[idx].push(f));
+                syncFileInput(attrRow);
+                renderAttrImages(attrRow);
+            });
+            tempInput.click();
+        });
+
+        previewBox.appendChild(addMoreBtn);
+    }
+
+    function syncFileInput(attrRow) {
+        const idx = getAttrIndex(attrRow);
+        const files = attrImageStore[idx] || [];
+        const fileInput = attrRow.querySelector('.attr-image-input');
+        const dt = new DataTransfer();
+        files.forEach(f => dt.items.add(f));
+        fileInput.files = dt.files;
+    }
+
+    function initAttrImageManager(attrRow) {
+        const idx = getAttrIndex(attrRow);
+        if (!attrImageStore[idx]) attrImageStore[idx] = [];
+        const fileInput = attrRow.querySelector('.attr-image-input');
+        fileInput.style.display = 'none'; // hide original input, use our UI
+        renderAttrImages(attrRow);
+    }
+
+    // Init all existing rows on page load
+    document.querySelectorAll('.attr-row').forEach(row => initAttrImageManager(row));
+
+
+    // ============================================
+    // CONFIGURABLE DEFAULT ATTRIBUTE VALIDATION
+    // ============================================
+
+    document.getElementById('productForm').addEventListener('submit', function(e) {
+
+        const productType = document.getElementById('product_type').value;
+
+        if (productType === 'configurable') {
+
+            const defaultChecked = document.querySelectorAll('input.def[type="checkbox"]:checked');
+
+            if (defaultChecked.length === 0) {
+                e.preventDefault(); // stop form submit
+
+                alert('For Configurable product, you must select at least one Default Attribute.');
+
+                return false;
+            }
+        }
+    });
     
+</script>
+<script src="{{ asset('tinymce/js/tinymce/tinymce.min.js') }}"></script>
+<script>
+['long_description', 'short_description', 'ingredients', 'how_to_use'].forEach(name => {
+    tinymce.init({
+        selector: `textarea[name="${name}"]`,
+        height: 300,
+        menubar: false,
+        license_key: 'gpl',
+        plugins: 'link image lists code table fullscreen',
+        toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code',
+    });
+});
 </script>
 
 @endsection

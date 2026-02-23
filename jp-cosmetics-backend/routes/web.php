@@ -164,6 +164,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/update/{id}', [ProductController::class, 'update'])->name('update');
         Route::post('{id}/toggle-status', [ProductController::class, 'toggleStatus'])->name('toggleStatus');
         Route::get('/product-requests', [ProductController::class, 'productRequestindex'])->name('product-requests.index');
+        Route::delete('/product-attribute-image/{id}', [ProductController::class, 'deleteAttributeImage'])->name('attribute.image.delete');
+        Route::post('{id}/duplicate', [ProductController::class, 'duplicate'])->name('duplicate');
         // Route::delete('{id}/destroy', [BrandController::class, 'destroy'])->name('destroy');
 
     });
