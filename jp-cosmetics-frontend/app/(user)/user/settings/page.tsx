@@ -12,8 +12,8 @@ export default function Settings() {
 
   return (
     <Suspense fallback={<UserLoader />}>
-      <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto">
+      <div className="py-8 px-4 sm:px-6 lg:px-8">
+        <div className="">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
             <p className="text-gray-600 mt-2">
@@ -21,7 +21,7 @@ export default function Settings() {
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 max-w-2xl mx-auto">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
               Account Settings
             </h2>
