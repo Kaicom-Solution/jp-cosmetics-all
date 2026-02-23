@@ -160,9 +160,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </span>
           )} */}
 
-          {product.default_attribute.discount_percentage > 0 && (
+          {product?.default_attribute?.discount_percentage > 0 && (
             <span className="bg-gradient-to-r from-emerald-500 to-green-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm animate-in fade-in slide-in-from-left-2 duration-700">
-              -{product.default_attribute.discount_percentage}%
+              -{product?.default_attribute.discount_percentage}%
             </span>
           )}
         </div>
@@ -245,13 +245,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <div className="flex items-baseline gap-2">
             <p className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
               BDT{" "}
-              {product.default_attribute.discount_percentage > 0
-                ? product.default_attribute.discounted_price.toFixed(2)
-                : product.default_attribute.unit_price}
+              {product?.default_attribute?.discount_percentage > 0
+                ? product?.default_attribute?.discounted_price.toFixed(2)
+                : product?.default_attribute?.unit_price}
             </p>
-            {product.default_attribute.discount_percentage > 0 && (
+            {product?.default_attribute?.discount_percentage > 0 && (
               <p className="text-sm text-gray-600 line-through ">
-                BDT {product.default_attribute.unit_price}
+                BDT {product?.default_attribute?.unit_price}
               </p>
             )}
           </div>
@@ -267,11 +267,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         {/* Savings Badge */}
-        {product.default_attribute.discount_percentage > 0 && (
+        {product?.default_attribute?.discount_percentage > 0 && (
           <div className="flex items-center justify-center">
             <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
               Save BDT{" "}
-              {product.default_attribute.attribute_discount_amount.toFixed(2)}
+              {product?.default_attribute?.attribute_discount_amount.toFixed(2)}
             </span>
           </div>
         )}

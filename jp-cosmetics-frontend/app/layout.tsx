@@ -5,6 +5,7 @@ import Footer from "@/components/footer/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import { getBusinessInfo } from "@/services/home.service";
 import { ToastContainer } from "react-toastify";
+import PopUpPromotion from "@/components/PopUpPromotion";
 
 // export const metadata: Metadata = {
 //   title: "Cosmetica - Premium Beauty & Cosmetics",
@@ -91,6 +92,7 @@ export default async function RootLayout({
 
         <ToastContainer />
         <ScrollToTop />
+        <PopUpPromotion/>
       </body>
     </html>
   );
