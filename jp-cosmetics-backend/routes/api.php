@@ -36,6 +36,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/add-address', [CustomerAuthController::class, 'addAddress']);
             Route::get('/address/{id}', [CustomerAuthController::class, 'getAddress']);
             Route::post('/update-address/{id}', [CustomerAuthController::class, 'updateAddress']);
+            Route::delete('/delete-address/{id}', [CustomerAuthController::class, 'deleteAddress']);
             Route::get('/orders-list', [CustomerAuthController::class, 'ordersList']);
             Route::get('/order-details/{order_id}', [CustomerAuthController::class, 'orderDetails']);
     

@@ -275,7 +275,7 @@ class CustomerAuthController extends Controller
     /////////////////////////////////////////////////////////
 
 
-   public function dashboard(Request $request)
+    public function dashboard(Request $request)
     {
         try {
             $customer = auth('customer')->user();
@@ -438,6 +438,20 @@ class CustomerAuthController extends Controller
         $address->update($request->only(['title', 'city', 'area', 'address', 'status', 'is_default']));
 
         return $this->responseWithSuccess($address, 'Address updated successfully', 200);
+    }
+
+    public function deleteAddress(Request $request, $id)
+    {
+        $customer = auth('customer')->user();
+        $address = $customer->addresses()->find($id);
+
+        if (!$address) {
+            return $this->responseWithError('Address not found', [], 404);
+        }
+
+        $address->delete();
+
+        return $this->responseWithSuccess([], 'Address deleted successfully', 200);
     }
 
 
