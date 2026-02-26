@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 
 import { useAuthStore } from "@/store/authStore";
 import { showToast } from "@/utils/toast";
@@ -11,6 +11,7 @@ import { ConfirmDeleteModal } from "@/components/user/ConfirmDeleteModal";
 
 import { addressService } from "@/services/user.service";
 import type { Address, AddressPayload } from "@/types/user";
+import UserLoader from "@/components/user/UserLoader";
 
 function AddressesSection() {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -67,16 +68,10 @@ function AddressesSection() {
     fetchAddress();
   }, []);
 
-  if (loading) return <div>Loading address...</div>;
-
-  // if (!address.length)
-  //   return (
-  //
-  //   );
-
   return (
-    <>
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+    <Suspense fallback ={<UserLoader />}>
+      {loading && <UserLoader />}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 min-h-[53vh]">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Saved Addresses</h2>
           <button
@@ -106,7 +101,10 @@ function AddressesSection() {
                   setSelectedAddress(item);
                   setShowEditModal(true);
                 }}
-                onRemove={() => {setShowDeleteModal(true) ; setSelectedAddress(item)}}
+                onRemove={() => {
+                  setShowDeleteModal(true);
+                  setSelectedAddress(item);
+                }}
               />
             ))}
           </div>
@@ -133,10 +131,10 @@ function AddressesSection() {
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDeleteAddress}
-        addressTitle={selectedAddress?.title || ''}
-        isDafault = {selectedAddress?.is_default || 0}
+        addressTitle={selectedAddress?.title || ""}
+        isDafault={selectedAddress?.is_default || 0}
       />
-    </>
+    </Suspense>
   );
 }
 

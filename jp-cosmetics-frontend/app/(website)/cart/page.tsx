@@ -247,7 +247,7 @@ const Cart = () => {
             </div>
 
             <Link
-              href="/checkout"
+              href={user ? "/checkout" : "/login?redirect=/checkout"}
               className="w-full bg-pink-600 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2"
             >
               Checkout <ArrowRight />

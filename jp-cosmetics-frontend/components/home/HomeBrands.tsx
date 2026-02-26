@@ -29,7 +29,7 @@ const HomeBrands = ({ brands }: { brands: Brand[] }) => {
               <div className="absolute inset-0 bg-gradient-to-br from-pink-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-pink-500/5 group-hover:via-purple-500/5 group-hover:to-pink-500/5 rounded-2xl transition-all duration-500"></div>
               
               {/* Logo container */}
-              <div className="relative mb-4 w-50 h-50 mx-w-full flex items-center justify-center overflow-clip">
+              <div className="relative mb-4 w-50 h-50 max-w-full flex items-center justify-center overflow-clip">
                 <div className="absolute inset-0 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
                 <Image
                   src={brand.logo}

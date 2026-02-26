@@ -13,6 +13,7 @@ type Props = {
 
 export default function PersonalInfoModal({ isOpen, onClose }: Props) {
   const user = useAuthStore().user;
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
     name: user?.name || "",
@@ -27,12 +28,15 @@ export default function PersonalInfoModal({ isOpen, onClose }: Props) {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     try {
       const user = await profileService.updateProfile(form);
       useAuthStore.getState().setUser(user);
       onClose();
     } catch (err) {
       showToast.error(`failed to get profile data`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -90,7 +94,7 @@ export default function PersonalInfoModal({ isOpen, onClose }: Props) {
               onClick={handleSubmit}
               className="rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 px-5 py-2 font-semibold text-white shadow-lg shadow-pink-500/30 hover:scale-[1.02] active:scale-[0.98] transition cursor-pointer"
             >
-              Save Changes
+              {loading ? "Changing .." : "Save Changes"}
             </button>
           </div>
         </div>

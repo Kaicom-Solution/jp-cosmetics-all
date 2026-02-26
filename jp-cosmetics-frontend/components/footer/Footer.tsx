@@ -199,6 +199,14 @@ export default function Footer({ data }: FooterProps) {
                 </li>
                 <li>
                   <Link
+                    href="/cookie-policy"
+                    className="text-gray-600 hover:text-pink-600 hover:translate-x-1 inline-block transition-all duration-300"
+                  >
+                    Cookie Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     href="/terms-Conditions"
                     className="text-gray-600 hover:text-pink-600 hover:translate-x-1 inline-block transition-all duration-300"
                   >
