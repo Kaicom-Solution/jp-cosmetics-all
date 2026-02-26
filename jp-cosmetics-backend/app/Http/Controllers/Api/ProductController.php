@@ -219,7 +219,7 @@ class ProductController extends Controller
         //     ProductDetailResource::collection($related) // lightweight resource
         // );
         return $this->responseWithSuccess(
-            $related->isEmpty() ? null : ProductDetailResource::collection($related)
+            $related->isEmpty() ? null : ProductResource::collection($related)
         );
     }
 
