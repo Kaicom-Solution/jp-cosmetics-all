@@ -64,7 +64,7 @@ const Login = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50 flex items-center justify-center py-12 px-4">
+    <div className="bg-gradient-to-br from-pink-50 via-white to-rose-50 flex items-center justify-center py-12 px-4">
       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         {/* Left Side - Benefits & Branding */}
         <div className="hidden lg:block">
@@ -209,7 +209,7 @@ const Login = () => {
 
               {/* Remember Me & Forgot Password (Login) */}
               <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 cursor-pointer group">
+                {/* <label className="flex items-center gap-2 cursor-pointer group">
                   <input
                     type="checkbox"
                     checked={rememberMe}
@@ -218,6 +218,11 @@ const Login = () => {
                   />
                   <span className="text-sm text-gray-700 group-hover:text-pink-600 transition-colors">
                     Remember me
+                  </span>
+                </label> */}
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <span className="text-sm text-gray-700 group-hover:text-pink-600 transition-colors">
+                    Don't remember password
                   </span>
                 </label>
                 <Link

@@ -4,21 +4,21 @@ import { useEffect, useState } from "react";
 
 import apiClient from "@/lib/axios";
 
-interface ReturnPolicy {
+interface Shipping {
   type: string;
   description: string;
 }
 
-export default function ReturnPolictComponent() {
-  const [returnData, setReturnData] = useState<ReturnPolicy>();
+export default function ShippingDeliveryComponent() {
+  const [shippingData, setShippingData] = useState<Shipping>();
   const [loading, setLoading] = useState(true);
 
   const getReturnData = async () => {
     setLoading(true);
     try {
       const response = await apiClient.get(`/settings/returns_exchanges`);
-      const data: ReturnPolicy = response?.data?.data || {};
-      setReturnData(data);
+      const data: Shipping = response?.data?.data || {};
+      setShippingData(data);
     } catch (error: any) {
       // console.error(error);
       // toast.error(error);
@@ -35,10 +35,10 @@ export default function ReturnPolictComponent() {
       <div className="bg-gradient-to-r from-pink-600 to-rose-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-[5%]">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center">
-            Return Policy
+            Shipping & Delivery
           </h1>
           <p className="text-xl text-center text-pink-50 max-w-2xl mx-auto mb-8">
-           Read our policy to return
+           Read our shipping and delivery
           </p>
         </div>
       </div>
@@ -46,7 +46,7 @@ export default function ReturnPolictComponent() {
         <div
           className=""
           dangerouslySetInnerHTML={{
-            __html: returnData?.description ?? "",
+            __html: shippingData?.description ?? "",
           }}
         />
       </div>

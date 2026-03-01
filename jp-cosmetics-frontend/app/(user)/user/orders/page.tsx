@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { orderService } from "@/services/user.service";
-import type { Order } from "@/types/user";
+import type { Order, OrderDetailResponse } from "@/types/user";
 
 import { TruckElectric, HandCoins } from "lucide-react";
 
@@ -29,8 +29,13 @@ const statusColors: Record<string, string> = {
 export default function OrdersSection() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedOrderId, setSelectedOrderid] = useState<number | null>(null);
   const [showOrderModal, setShowOrderModal] = useState(false);
+  const [orderDetails, setOrderDetails] = useState<OrderDetailResponse | null>(
+    null,
+  );
+  const [activeReviewIndex, setActiveReviewIndex] = useState<number | null>(
+    null,
+  );
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -48,9 +53,22 @@ export default function OrdersSection() {
     fetchOrders();
   }, []);
 
+  const fetchOrderDetails = async (id: any) => {
+    setActiveReviewIndex(null);
+    setLoading(true);
+    try {
+      const data = await orderService.detail(id);
+      setOrderDetails(data);
+    } catch (error) {
+      showToast.error(`failed to get order details`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <Suspense fallback={<UserLoader/>}>
-      {loading && <UserLoader/>}
+    <Suspense fallback={<UserLoader />}>
+      {loading && <UserLoader />}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 min-h-[53vh]">
         <h2 className="text-2xl font-bold text-gray-900 mb-6">My Orders</h2>
 
@@ -102,36 +120,30 @@ export default function OrdersSection() {
                 <div className="flex flex-wrap gap-3">
                   <button
                     onClick={() => {
-                      setSelectedOrderid(order.id);
+                      fetchOrderDetails(order.id);
                       setShowOrderModal(true);
                     }}
                     className="flex-1 px-4 py-2.5 border-2 border-pink-500 text-pink-600 rounded-xl font-semibold hover:bg-pink-50 transition-colors cursor-pointer"
                   >
                     View Details
                   </button>
-                  {/* <button
-                  onClick={() => {
-                    setSelectedOrderid(order.id);
-                    setShowOrderModal(true);
-                  }}
-                  className="flex-1 px-4 py-2.5 border-2 border-pink-500 text-pink-600 rounded-xl font-semibold hover:bg-pink-50 transition-colors cursor-pointer"
-                >
-                  Track Order
-                </button> */}
-                  {/* <button className="flex-1 px-4 py-2.5 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all cursor-pointer">
-                  Reorder
-                </button> */}
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
-      <OrderDetailsModal
-        isOpen={showOrderModal}
-        onClose={() => setShowOrderModal(false)}
-        selectedOrderId={selectedOrderId}
-      />
+      {loading ? (
+        <UserLoader />
+      ) : (
+        <OrderDetailsModal
+          isOpen={showOrderModal}
+          onClose={() => setShowOrderModal(false)}
+          orderDetails={orderDetails}
+          activeReviewIndex={activeReviewIndex}
+          setActiveReviewIndex={setActiveReviewIndex}
+        />
+      )}
     </Suspense>
   );
 }

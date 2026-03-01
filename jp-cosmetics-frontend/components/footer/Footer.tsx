@@ -7,10 +7,8 @@ import {
   MapPin,
   Phone,
   Facebook,
-  Instagram,
   Twitter,
   Send,
-  Linkedin,
   InstagramIcon,
   Youtube,
 } from "lucide-react";
@@ -148,7 +146,7 @@ export default function Footer({ data }: FooterProps) {
                 </li>
                 <li>
                   <Link
-                    href="#"
+                    href="/shipping-delivery"
                     className="text-gray-600 hover:text-pink-600 hover:translate-x-1 inline-block transition-all duration-300"
                   >
                     Shipping Delivery

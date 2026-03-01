@@ -1,8 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, User, Heart, ShoppingCart, Menu, X } from "lucide-react";
-import { BusinessInfo, Product } from "@/types";
+import {
+  Search,
+  User,
+  Heart,
+  ShoppingCart,
+  Menu,
+  X,
+  LogIn,
+} from "lucide-react";
+import { BusinessInfo } from "@/types";
 import apiClient from "@/lib/axios";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -10,6 +18,7 @@ import Image from "next/image";
 import { useCartStore } from "@/store/cart-store";
 import { useAuthStore } from "@/store/authStore";
 import { useWishlistStore } from "@/store/wishListStore";
+import SubHeader from "./SubHeader";
 
 const navdata = [
   { id: "home", label: "Home", link: "/" },
@@ -33,53 +42,49 @@ export default function Header({ data }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [productList, setProductList] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    if (searchOpen && searchQuery != "") {
+    if (!searchOpen || !searchQuery.trim()) {
       setProductList([]);
-      try {
-        apiClient
-          .get<{ success: boolean; data: any[]; message: string }>(
-            `/products/search?query=${encodeURIComponent(searchQuery)}`
-          )
-          .then((res) => {
-            if (res.data.success) {
-              setProductList(res.data.data);
-            }
-          })
-          .catch((error: any) => {
-            // toast.error(
-            //   error?.response?.data?.message || "Can not get products at this moment"
-            // );
-          });
-      } catch (error: any) {
-        // toast.error(
-        //   error?.response?.data?.message ||
-        //     "Can not get subscription plans at this moment"
-        // );
-      }
+      return;
     }
+
+    const controller = new AbortController();
+    const delayDebounce = setTimeout(async () => {
+      try {
+        setLoading(true);
+
+        const res = await apiClient.get<{
+          success: boolean;
+          data: any[];
+        }>(`/products/search?query=${encodeURIComponent(searchQuery)}`, {
+          signal: controller.signal,
+        });
+
+        if (res.data.success) {
+          setProductList(res.data.data);
+        }
+      } catch (error: any) {
+        if (error.name !== "CanceledError") {
+          console.error("Search error:", error);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }, 400);
+
+    return () => {
+      clearTimeout(delayDebounce);
+      controller.abort();
+    };
   }, [searchOpen, searchQuery]);
 
   return (
     <>
       {/* Top Bar */}
-      <div className="bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 text-white shadow-sm">
-        <div className="px-[5%] flex items-center justify-between text-[11px] md:text-xs">
-          <div className="flex items-center divide-x divide-pink-400/30">
-            <p className="py-2.5 pr-4 md:pr-6 hidden sm:block font-medium">
-              ✨ Free Shipping on Orders Over $50
-            </p>
-            <p className="py-2.5 px-4 md:px-6 font-medium hover:text-pink-100 cursor-pointer transition-colors">
-              Help & Advice
-            </p>
-          </div>
-          <div className="py-2.5 pl-4 md:pl-6 font-medium hover:text-pink-100 cursor-pointer transition-colors">
-            Welcome {user?.name ? user?.name : "(Login)"}
-          </div>
-        </div>
-      </div>
+      <SubHeader user={user} />
 
       {/* Sticky Navbar */}
       <div className="sticky top-0 bg-white/95 backdrop-blur-xl shadow-sm z-50 border-b border-gray-100">
@@ -98,26 +103,30 @@ export default function Header({ data }: HeaderProps) {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-8 xl:gap-10 font-semibold text-lg">
-              {navdata.map((item) => (
-                <Link
-                  key={item.id}
-                  href={item.link}
-                  className={`relative py-1 transition-all duration-300 group ${
-                    pathname === item.link
-                      ? "text-pink-600"
-                      : "text-gray-700 hover:text-pink-600"
-                  }`}
-                >
-                  {item.label}
-                  <span
-                    className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-[3px] rounded-full bg-gradient-to-r from-pink-500 to-rose-600 transition-all duration-300 ${
-                      pathname === item.link
-                        ? "w-full"
-                        : "w-0 group-hover:w-full"
+              {navdata.map((item) => {
+                const isActive =
+                  item.link === "/"
+                    ? pathname === "/"
+                    : pathname.startsWith(item.link);
+                return (
+                  <Link
+                    key={item.id}
+                    href={item.link}
+                    className={`relative py-1 transition-all duration-300 group ${
+                      isActive
+                        ? "text-pink-600"
+                        : "text-gray-700 hover:text-pink-600"
                     }`}
-                  />
-                </Link>
-              ))}
+                  >
+                    {item.label}
+                    <span
+                      className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-[3px] rounded-full bg-gradient-to-r from-pink-500 to-rose-600 transition-all duration-300 ${
+                        isActive ? "w-full" : "w-0 group-hover:w-full"
+                      }`}
+                    />
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* Desktop Icons */}
@@ -139,10 +148,14 @@ export default function Header({ data }: HeaderProps) {
                 className="flex flex-col items-center gap-1 text-gray-600 hover:text-pink-600 transition-colors group"
               >
                 <div className="p-2 rounded-full group-hover:bg-pink-50 transition-colors">
-                  <User className="w-5 h-5" />
+                  {user?.name ? (
+                    <User className="w-5 h-5" />
+                  ) : (
+                    <LogIn className="w-5 h-5" />
+                  )}
                 </div>
                 <span className="text-[12px]">
-                  {user?.name ? user?.name : "Account"}
+                  {user?.name ? user?.name : "Login"}
                 </span>
               </Link>
 
@@ -192,20 +205,26 @@ export default function Header({ data }: HeaderProps) {
           {mobileMenuOpen && (
             <div className="lg:hidden py-4 border-t border-gray-100 font-semibold">
               <nav className="flex flex-col gap-4">
-                {navdata.map((item) => (
-                  <Link
-                    key={item.id}
-                    href={item.link}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`px-4 py-2 rounded-lg transition-colors ${
-                      pathname === item.link
-                        ? "bg-gradient-to-r from-pink-500 to-rose-600 text-white"
-                        : "text-gray-700 hover:bg-pink-50"
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
+                {navdata.map((item) => {
+                  const isActive =
+                    item.link === "/"
+                      ? pathname === "/"
+                      : pathname.startsWith(item.link);
+                  return (
+                    <Link
+                      key={item.id}
+                      href={item.link}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`px-4 py-2 rounded-lg transition-colors ${
+                        isActive
+                          ? "bg-gradient-to-r from-pink-500 to-rose-600 text-white"
+                          : "text-gray-700 hover:bg-pink-50"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
               </nav>
 
               <div className="grid grid-cols-4 gap-4 mt-6 pt-6 border-t border-gray-100">
@@ -223,9 +242,14 @@ export default function Header({ data }: HeaderProps) {
                   href={user?.name ? "/user/dashboard" : "/login"}
                   className="flex flex-col items-center gap-2 text-gray-600"
                 >
-                  <User className="w-6 h-6" />
+                  {user?.name ? (
+                    <User className="w-6 h-6" />
+                  ) : (
+                    <LogIn className="w-6 h-6" />
+                  )}
+
                   <span className="text-xs">
-                    {user?.name ? user?.name : "Account"}
+                    {user?.name ? user?.name : "Login"}
                   </span>
                 </Link>
                 <Link
@@ -287,7 +311,8 @@ export default function Header({ data }: HeaderProps) {
 
               {/* Modal Content */}
               <div className="flex-1 overflow-y-auto p-6">
-                {searchQuery === "" ? (
+                {searchQuery.trim() === "" ? (
+                  // ================= EMPTY =================
                   <div className="text-center py-12">
                     <div className="w-16 h-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Search className="w-8 h-8 text-pink-500" />
@@ -299,15 +324,23 @@ export default function Header({ data }: HeaderProps) {
                       Start typing to search for your favorite cosmetics
                     </p>
                   </div>
+                ) : loading ? (
+                  // ================= LOADING =================
+                  <div className="text-center py-12">
+                    <div className="animate-pulse text-sm text-gray-500">
+                      Searching products...
+                    </div>
+                  </div>
                 ) : productList.length > 0 ? (
+                  // ================= RESULTS =================
                   <div className="space-y-3">
                     <p className="text-sm text-gray-500 mb-4">
                       Found {productList.length} products
                     </p>
-                    {productList.map((product) => (
+
+                    {productList.slice(0, 8).map((product) => (
                       <button
                         key={product.id}
-                        // href={`/shop/${product.slug}`}
                         onClick={() => {
                           setSearchOpen(false);
                           setSearchQuery("");
@@ -320,19 +353,29 @@ export default function Header({ data }: HeaderProps) {
                           alt={product.name}
                           className="w-16 h-16 object-cover rounded-lg"
                         />
+
                         <div className="flex-1 text-left">
                           <h4 className="font-medium text-gray-900 group-hover:text-pink-600 transition-colors">
                             {product.name}
                           </h4>
-                          <p className="text-sm text-gray-500">Category</p>
+                          {product.category && (
+                            <p className="text-sm text-gray-500">
+                              {product.category.name}
+                            </p>
+                          )}
                         </div>
+
                         <div className="text-lg font-semibold text-pink-600">
-                          BDT {product?.default_attribute?.discounted_price}
+                          BDT{" "}
+                          {product?.default_attribute?.discounted_price ??
+                            product?.default_attribute?.price ??
+                            product?.price}
                         </div>
                       </button>
                     ))}
                   </div>
                 ) : (
+                  // ================= NO RESULT =================
                   <div className="text-center py-12">
                     <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Search className="w-8 h-8 text-gray-400" />

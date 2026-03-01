@@ -20,7 +20,7 @@ function Wishlist() {
         <h2 className="text-2xl font-bold text-gray-900 mb-6">My Wishlist</h2>
 
         {items.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
             {items.map((i) => (
               <ProductCard key={i.id} product={i} wishlisted={true} />
             ))}

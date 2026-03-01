@@ -20,6 +20,7 @@ import { showToast } from "@/utils/toast";
 import { dashboardService, orderService } from "@/services/user.service";
 import { DashboardResponse, Order } from "@/types/user";
 import UserLoader from "./UserLoader";
+import Link from "next/link";
 
 export default function DashboardComponent() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -97,10 +98,13 @@ export default function DashboardComponent() {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">Recent Orders</h2>
-          <button className="text-pink-600 hover:text-pink-700 text-sm font-semibold flex items-center gap-1">
+          <Link href="/user/orders">
+          <button className="text-pink-600 hover:text-pink-700 text-sm font-semibold flex items-center gap-1 hover:underline duration-300 cursor-pointer">
             View All
             <ChevronRight className="w-4 h-4" />
           </button>
+          </Link>
+          
         </div>
 
         <div className="space-y-4">
