@@ -6,7 +6,7 @@ import apiClient from "@/lib/axios";
 
 interface PrivacyPolicy {
   type: string;
-  content: string;
+  description: string;
 }
 
 export default function PrivacyPolicyComponent() {
@@ -46,7 +46,7 @@ export default function PrivacyPolicyComponent() {
         <div
           className=""
           dangerouslySetInnerHTML={{
-            __html: privacyPolicyData?.content ?? "",
+            __html: privacyPolicyData?.description ?? "",
           }}
         />
       </div>

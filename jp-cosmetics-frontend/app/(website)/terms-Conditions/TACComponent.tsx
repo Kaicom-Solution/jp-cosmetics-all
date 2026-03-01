@@ -6,7 +6,7 @@ import apiClient from "@/lib/axios";
 
 interface TermsCondition {
   type: string;
-  content: string;
+  description: string;
 }
 
 export default function TACComponent() {
@@ -46,7 +46,7 @@ export default function TACComponent() {
         <div
           className=""
           dangerouslySetInnerHTML={{
-            __html: tacData?.content ?? "",
+            __html: tacData?.description ?? "",
           }}
         />
       </div>

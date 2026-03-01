@@ -3,6 +3,7 @@
 import { X } from "lucide-react";
 import { useState, useEffect } from "react";
 import apiClient from "@/lib/axios";
+import Link from "next/link";
 
 interface Promotion {
   id: number;
@@ -19,7 +20,7 @@ export default function PopUpPromotion() {
 
   const getPopPromotion = async () => {
     try {
-      const response = await apiClient.get(`/settings/promotion_popup`);
+      const response = await apiClient.get(`/promotion-popup/live`);
       const data = response?.data?.data;
 
       if (data) {
@@ -28,6 +29,7 @@ export default function PopUpPromotion() {
       }
     } catch (error) {
       console.error(error);
+      setPromotion(null);
     }
   };
 
@@ -37,20 +39,13 @@ export default function PopUpPromotion() {
 
   if (!showPromotion || !promotion) return null;
 
-  const {
-    title,
-    description,
-    image,
-    button_text,
-    button_url,
-  } = promotion;
+  const { title, description, image, button_text, button_url } = promotion;
 
   const hasText = title || description;
 
   return (
     <div className="fixed z-50 inset-0 bg-black/60 p-5 flex justify-center items-center">
-      <div className="max-w-4xl w-full bg-white rounded-xl relative overflow-hidden">
-
+      <div className="max-w-4xl w-full bg-white rounded-xl relative overflow-hidden popup">
         {/* Close Button */}
         <X
           onClick={() => setShowPromotion(false)}
@@ -68,31 +63,29 @@ export default function PopUpPromotion() {
 
         {/* If image + text */}
         {image && hasText && (
-          <div className="grid md:grid-cols-2">
+          <div className="grid md:grid-cols-5 min-h-[50vh]">
             <img
               src={image}
               alt="Promotion"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover md:col-span-3"
             />
 
-            <div className="p-6 flex flex-col justify-center space-y-4">
+            <div className="p-6 flex flex-col justify-center space-y-4 md:col-span-2">
               {title && (
-                <h2 className="text-2xl font-bold">{title}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
               )}
 
-              {description && (
-                <p className="text-gray-600">{description}</p>
-              )}
+              {description && <p className="text-gray-600">{description}</p>}
 
               {button_url && (
-                <a
+                <Link
                   href={button_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition"
+                  className="inline-block bg-gradient-to-r from-pink-600 to-rose-600 text-white text-center px-6 py-2 rounded-lg hover:opacity-80 transition"
                 >
                   {button_text || "Learn More"}
-                </a>
+                </Link>
               )}
             </div>
           </div>
@@ -100,14 +93,10 @@ export default function PopUpPromotion() {
 
         {/* If no image but text exists */}
         {!image && hasText && (
-          <div className="p-6 text-center space-y-4">
-            {title && (
-              <h2 className="text-2xl font-bold">{title}</h2>
-            )}
+          <div className="p-6 text-center space-y-4 min-h-[50vh]">
+            {title && <h2 className="text-2xl font-bold">{title}</h2>}
 
-            {description && (
-              <p className="text-gray-600">{description}</p>
-            )}
+            {description && <p className="text-gray-600">{description}</p>}
 
             {button_url && (
               <a

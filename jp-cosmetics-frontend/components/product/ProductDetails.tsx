@@ -27,6 +27,7 @@ import { SingleProduct, Product } from "@/types";
 import Image from "next/image";
 import { useCartStore } from "@/store/cart-store";
 import { showToast } from "@/utils/toast";
+import { useWishlistStore } from "@/store/wishListStore";
 
 interface responseProps {
   product: SingleProduct;
@@ -34,10 +35,8 @@ interface responseProps {
 }
 
 const ProductDetails = ({ product, relatedProduct }: responseProps) => {
-  // console.log(product);
-  // console.log(relatedProduct , 're')
-
   const addItem = useCartStore((state) => state.addItem);
+  const { remove, add } = useWishlistStore();
   const [selectedImage, setSelectedImage] = useState(0);
   const [main_image, setMainImage] = useState(product.primary_image);
   const [quantity, setQuantity] = useState(1);
@@ -91,6 +90,23 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
     showToast.success("Product added to cart successfully!");
   };
 
+  const toggleWishlist = async (e: React.MouseEvent, productId: number) => {
+    e.preventDefault();
+    try {
+      if (!isWishlisted) {
+        await add(productId);
+        setIsWishlisted(true);
+        showToast.success("Product added to cart wishlist!");
+      } else {
+        await remove(productId);
+        setIsWishlisted(false);
+        showToast.success("Product removed to cart wishlist!");
+      }
+    } catch (error) {
+      console.error("Wishlist action failed", error);
+    }
+  };
+
   const pageUrl = typeof window !== "undefined" ? window.location.href : "";
 
   const shareText = "Check out this product!";
@@ -98,6 +114,37 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
   const openShareWindow = (url: string) => {
     window.open(url, "_blank", "noopener,noreferrer,width=600,height=500");
   };
+
+  const reviews = [
+    {
+      name: "Alice",
+      initial: "A",
+      comment: "Great product, really loved it!",
+      rating: 5,
+      date: "2026-02-20",
+    },
+    {
+      name: "Bob",
+      initial: "B",
+      comment: "Service was okay, could be faster.",
+      rating: 3,
+      date: "2026-02-18",
+    },
+    {
+      name: "Charlie",
+      initial: "C",
+      comment: "Amazing experience, highly recommend!",
+      rating: 4,
+      date: "2026-02-15",
+    },
+    {
+      name: "Diana",
+      initial: "D",
+      comment: "Not bad, but expected better quality.",
+      rating: 2,
+      date: "2026-02-12",
+    },
+  ];
 
   return (
     <div className="bg-white min-h-screen">
@@ -326,7 +373,7 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
               {/* Quantity & Actions */}
               <div className="flex items-center gap-3 flex-wrap">
                 <button
-                  onClick={() => setIsWishlisted(!isWishlisted)}
+                  onClick={(e) => toggleWishlist(e, product.id)}
                   className={`w-12 h-12 rounded-lg flex items-center justify-center border-2 transition-all cursor-pointer flex-shrink-0 ${
                     isWishlisted
                       ? "bg-pink-50 border-pink-500 text-pink-600"
@@ -452,7 +499,7 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
               >
                 How to Use
               </button>
-              {/* <button
+              <button
                 onClick={() => setActiveTab("reviews")}
                 className={`flex-shrink-0 py-4 px-6 font-semibold transition-colors cursor-pointer ${
                   activeTab === "reviews"
@@ -460,8 +507,9 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
                     : "text-gray-600 hover:text-pink-600 hover:bg-gray-50"
                 }`}
               >
-                Reviews ({productData.reviewCount})
-              </button> */}
+                Reviews
+                {/* ({productData.reviewCount}) */}
+              </button>
             </div>
 
             {/* Tab Content */}
@@ -497,17 +545,29 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
               )}
 
               {activeTab === "reviews" && (
-                <div className="text-center py-12">
-                  <Star className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    No Reviews Yet
-                  </h3>
-                  <p className="text-gray-600 mb-6">
-                    Be the first to review this product!
-                  </p>
-                  <button className="px-6 py-3 bg-gradient-to-r from-pink-500 to-pink-600 text-white font-semibold rounded-lg hover:from-pink-600 hover:to-pink-700 transition-all shadow-lg hover:scale-105 cursor-pointer">
-                    Write a Review
-                  </button>
+                <div className="space-y-4">
+                  {reviews.map((review, index) => (
+                    <div
+                      key={index}
+                      className="flex space-x-4 items-start bg-gray-50 p-4 rounded-lg shadow-sm"
+                    >
+                      <p className="w-10 h-10 flex justify-center items-center rounded-full bg-linear-to-r from-pink-500 to-pink-600 hover:from-pink-600 text-white font-bold text-lg">
+                        {review.initial}
+                      </p>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center mb-1">
+                          <p className="font-semibold">{review.name}</p>
+                          <p className="text-sm text-gray-500">{review.date}</p>
+                        </div>
+                        <div className="flex text-yellow-400 mb-1">
+                          {Array.from({ length: 5 }, (_, i) => (
+                            <span key={i}>{i < review.rating ? "★" : "☆"}</span>
+                          ))}
+                        </div>
+                        <p className="text-gray-700">{review.comment}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>

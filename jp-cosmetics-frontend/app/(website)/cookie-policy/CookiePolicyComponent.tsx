@@ -6,7 +6,7 @@ import apiClient from "@/lib/axios";
 
 interface CookiePolicy {
   type: string;
-  content: string;
+  description: string;
 }
 
 export default function CookiePolicyComponent() {
@@ -46,7 +46,7 @@ export default function CookiePolicyComponent() {
         <div
           className=""
           dangerouslySetInnerHTML={{
-            __html: cookie?.content ?? "",
+            __html: cookie?.description ?? "",
           }}
         />
       </div>

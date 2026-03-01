@@ -62,7 +62,7 @@ export const addressService = {
   },
 
   async remove(id: number): Promise<void> {
-    await apiClient.delete(`/customer/update-address/${id}`);
+    await apiClient.delete(`/customer/delete-address/${id}`);
   },
 
   async setDefault(id: number): Promise<void> {
