@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\BlogController;
-
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\BusinessSettingController;
 use App\Http\Controllers\Api\CategoryController;
@@ -13,6 +12,7 @@ use App\Http\Controllers\Api\NoticeController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\PromotionPopupController;
+use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SliderController;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +57,10 @@ Route::prefix('v1')->group(function () {
             Route::get('/customer-orders-list', [OrderController::class, 'orderListOfaCustomer']);
             Route::get('/specific-order-details/{order_number}', [OrderController::class, 'showSpecificOrderDetails']);
             Route::get('/track-order/{order_number}', [OrderController::class, 'trackOrder']);
+
+            // Review Routes
+            Route::get('/{order}/reviews', [ReviewController::class, 'index'])->name('reviews.index');
+            Route::post('/{order}/{orderDetail}/review', [ReviewController::class, 'store'])->name('reviews.store');
         });
     });
 
