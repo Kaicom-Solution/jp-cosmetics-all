@@ -69,7 +69,8 @@ class ProductController extends Controller
                 $data['primary_image'] = null;
             }
 
-            $data['slug'] = rand(1, 99999) . '-' . Str::of($data['name'])->slug('-');
+            $data['slug'] = Str::of($data['name'])->slug('-');
+
 
             $product = Product::create([
                 'name'              => $data['name'],
@@ -175,9 +176,12 @@ class ProductController extends Controller
                 $data['primary_image'] = $product->primary_image;
             }
 
+            $data['slug'] = Str::of($data['name'])->slug('-');
+
 
             $product->update([
                 'name' => $data['name'],
+                'slug' => $data['slug'],
                 'category_id' => $data['category_id'],
                 'brand_id' => $data['brand_id'] ?? null,
                 'primary_image'     => $data['primary_image'],
@@ -301,5 +305,53 @@ class ProductController extends Controller
             ->withQueryString();
 
         return view('products.product_requests_index', compact('requests'));
+    }
+
+    public function deleteAttributeImage($id)
+    {
+        $image = ProductAttributeImage::findOrFail($id);
+        // optional: delete from cloud storage 
+        // $this->fileStorageService->delete($image->image_path);
+        $image->delete();
+        return response()->json(['success' => true]);
+    }
+
+    public function duplicate($id)
+    {
+        DB::beginTransaction();
+        try {
+            $original = Product::with('attributes.attribute_images')->findOrFail($id);
+
+            // New unique slug
+            $newSlug = Str::slug($original->name) . '-copy';
+
+            // Duplicate product
+            $newProduct = $original->replicate();
+            $newProduct->slug = $newSlug;
+            $newProduct->name = $original->name . ' (Copy)';
+            $newProduct->save();
+
+            // Duplicate attributes + images
+            foreach ($original->attributes as $attr) {
+                $newAttr = $attr->replicate();
+                $newAttr->product_id = $newProduct->id;
+                $newAttr->save();
+
+                foreach ($attr->attribute_images as $img) {
+                    $newImg = $img->replicate();
+                    $newImg->attribute_id = $newAttr->id;
+                    $newImg->save();
+                }
+            }
+
+            DB::commit();
+            Toastr::success('Product duplicated successfully.');
+            return redirect()->route('product.list');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Product duplicate failed: ' . $e->getMessage());
+            Toastr::error('Duplicate failed. Please try again.');
+            return redirect()->route('product.list');
+        }
     }
 }

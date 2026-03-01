@@ -1,7 +1,7 @@
 @extends('master')
 
 @section('contents')
-
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
     .btn-remove-attr.disabled {
         opacity: 0.5;
@@ -252,9 +252,28 @@
                             <div class="col-md-6">
                                 <label class="form-label">Attribute Images</label>
                                 <input type="file" accept="image/*" multiple class="form-control attr-image-input" name="attributes[{{ $idx }}][attribute_images][]" />
-                                <div class="attr-images-preview mt-2">
+                                {{-- <div class="attr-images-preview mt-2">
                                     @foreach($attr['attribute_images'] ?? [] as $image)
                                         <img src="{{ $image['image_path'] }}" class="img-thumbnail" width="50" height="50">
+                                    @endforeach
+                                </div> --}}
+                                <div class="attr-images-preview mt-2" data-attr-index="{{ $idx }}">
+                                    @foreach($attr['attribute_images'] ?? [] as $image)
+                                        <div class="attr-img-wrapper" style="position:relative; display:inline-block; margin:4px;"
+                                            data-image-id="{{ $image['id'] }}">
+                                            <img src="{{ $image['image_path'] }}"
+                                                class="rounded border"
+                                                style="width:64px; height:64px; object-fit:cover; display:block;" />
+                                            <button type="button"
+                                                    class="attr-img-remove-existing"
+                                                    data-image-id="{{ $image['id'] }}"
+                                                    style="position:absolute; top:-6px; right:-6px; width:20px; height:20px;
+                                                        background:#dc3545; color:#fff; border:none; border-radius:50%;
+                                                        font-size:13px; line-height:1; cursor:pointer; display:none;
+                                                        align-items:center; justify-content:center; padding:0; z-index:10;">
+                                                &times;
+                                            </button>
+                                        </div>
                                     @endforeach
                                 </div>
                             </div>
@@ -314,23 +333,23 @@
         }
     });
 
-    container.addEventListener('change', e => {
-        if (e.target.matches('.attr-image-input')) {
-            const previewBox = e.target.closest('.attr-row').querySelector('.attr-images-preview');
-            previewBox.innerHTML = '';
-            Array.from(e.target.files).forEach(f => {
-                const r = new FileReader();
-                r.onload = ev => {
-                    const img = document.createElement('img');
-                    img.src = ev.target.result;
-                    img.className = 'rounded border me-2 mb-2';
-                    img.style.width='56px'; img.style.height='56px'; img.style.objectFit='cover';
-                    previewBox.appendChild(img);
-                };
-                r.readAsDataURL(f);
-            });
-        }
-    });
+    // container.addEventListener('change', e => {
+    //     if (e.target.matches('.attr-image-input')) {
+    //         const previewBox = e.target.closest('.attr-row').querySelector('.attr-images-preview');
+    //         previewBox.innerHTML = '';
+    //         Array.from(e.target.files).forEach(f => {
+    //             const r = new FileReader();
+    //             r.onload = ev => {
+    //                 const img = document.createElement('img');
+    //                 img.src = ev.target.result;
+    //                 img.className = 'rounded border me-2 mb-2';
+    //                 img.style.width='56px'; img.style.height='56px'; img.style.objectFit='cover';
+    //                 previewBox.appendChild(img);
+    //             };
+    //             r.readAsDataURL(f);
+    //         });
+    //     }
+    // });
 
     function rowHtml(i) {
         return `
@@ -503,6 +522,157 @@
         });
     });
 
+
+
+    // ============================================
+    // ATTRIBUTE IMAGE MANAGER (EDIT PAGE)
+    // ============================================
+    const attrImageStore = {};
+    const deleteImageUrl = "{{ route('product.attribute.image.delete', '__ID__') }}";
+
+    function renderAttrImages(attrRow) {
+        const idx = attrRow.getAttribute('data-attr-row');
+        const files = attrImageStore[idx] || [];
+        const previewBox = attrRow.querySelector('.attr-images-preview');
+
+        // Remove only the new-image wrappers and + button (keep existing DB image wrappers)
+        previewBox.querySelectorAll('.attr-img-new-wrapper, .attr-img-add-more').forEach(el => el.remove());
+
+        // Render new (not-yet-uploaded) files
+        files.forEach((file, fileIdx) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'attr-img-new-wrapper';
+            wrapper.style.cssText = 'position:relative; display:inline-block; margin:4px; vertical-align:top;';
+
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.className = 'rounded border';
+            img.style.cssText = 'width:64px; height:64px; object-fit:cover; display:block;';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.innerHTML = '&times;';
+            removeBtn.style.cssText = `
+                position:absolute; top:-6px; right:-6px; width:20px; height:20px;
+                background:#dc3545; color:#fff; border:none; border-radius:50%;
+                font-size:13px; cursor:pointer; display:none;
+                align-items:center; justify-content:center; padding:0; z-index:10;
+            `;
+            removeBtn.addEventListener('click', () => {
+                attrImageStore[idx].splice(fileIdx, 1);
+                syncFileInput(attrRow);
+                renderAttrImages(attrRow);
+            });
+
+            wrapper.addEventListener('mouseenter', () => removeBtn.style.display = 'flex');
+            wrapper.addEventListener('mouseleave', () => removeBtn.style.display = 'none');
+            wrapper.appendChild(img);
+            wrapper.appendChild(removeBtn);
+            previewBox.appendChild(wrapper);
+        });
+
+        // + Add more button
+        const addMoreBtn = document.createElement('div');
+        addMoreBtn.className = 'attr-img-add-more';
+        addMoreBtn.style.cssText = `
+            display:inline-flex; align-items:center; justify-content:center;
+            width:64px; height:64px; border:2px dashed #adb5bd; border-radius:6px;
+            cursor:pointer; font-size:28px; color:#6c757d; margin:4px; vertical-align:top;
+            transition: border-color .15s, color .15s; user-select:none;
+        `;
+        addMoreBtn.textContent = '+';
+        addMoreBtn.addEventListener('mouseenter', () => {
+            addMoreBtn.style.borderColor = '#0d6efd';
+            addMoreBtn.style.color = '#0d6efd';
+        });
+        addMoreBtn.addEventListener('mouseleave', () => {
+            addMoreBtn.style.borderColor = '#adb5bd';
+            addMoreBtn.style.color = '#6c757d';
+        });
+        addMoreBtn.addEventListener('click', () => {
+            const tempInput = document.createElement('input');
+            tempInput.type = 'file';
+            tempInput.accept = 'image/*';
+            tempInput.multiple = true;
+            tempInput.addEventListener('change', () => {
+                if (!attrImageStore[idx]) attrImageStore[idx] = [];
+                Array.from(tempInput.files).forEach(f => attrImageStore[idx].push(f));
+                syncFileInput(attrRow);
+                renderAttrImages(attrRow);
+            });
+            tempInput.click();
+        });
+
+        previewBox.appendChild(addMoreBtn);
+    }
+
+    function syncFileInput(attrRow) {
+        const idx = attrRow.getAttribute('data-attr-row');
+        const files = attrImageStore[idx] || [];
+        const fileInput = attrRow.querySelector('.attr-image-input');
+        const dt = new DataTransfer();
+        files.forEach(f => dt.items.add(f));
+        fileInput.files = dt.files;
+    }
+
+    function initAttrImageManager(attrRow) {
+        const idx = attrRow.getAttribute('data-attr-row');
+        if (!attrImageStore[idx]) attrImageStore[idx] = [];
+
+        const fileInput = attrRow.querySelector('.attr-image-input');
+        fileInput.style.display = 'none';
+
+        // Hover effect for EXISTING (DB) images
+        attrRow.querySelectorAll('.attr-img-wrapper[data-image-id]').forEach(wrapper => {
+            const removeBtn = wrapper.querySelector('.attr-img-remove-existing');
+            wrapper.addEventListener('mouseenter', () => removeBtn.style.display = 'flex');
+            wrapper.addEventListener('mouseleave', () => removeBtn.style.display = 'none');
+
+            removeBtn.addEventListener('click', () => {
+                const imageId = removeBtn.getAttribute('data-image-id');
+                if (!confirm('Delete this image?')) return;
+
+                fetch(deleteImageUrl.replace('__ID__', imageId), {
+    method: 'DELETE',
+    headers: {
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
+        'Accept': 'application/json',
+    }
+})
+.then(res => {
+    console.log('Status:', res.status);
+    return res.json();
+})
+.then(data => {
+    console.log('Response:', data);
+    if (data.success) {
+        wrapper.remove();
+    }
+})
+.catch(err => {
+    console.error('Error:', err);
+    alert('Delete failed: ' + err.message);
+});
+            });
+        });
+
+        renderAttrImages(attrRow);
+    }
+
+    // Init all existing rows
+    document.querySelectorAll('.attr-row').forEach(row => initAttrImageManager(row));
+
+    // Init new dynamically added rows
+    const origAddClick = document.getElementById('addAttributeBtn').onclick;
+    document.getElementById('addAttributeBtn').addEventListener('click', () => {
+        setTimeout(() => {
+            const lastRow = document.querySelector('#attributesContainer .attr-row:last-child');
+            if (lastRow && !lastRow.dataset.imageManagerInit) {
+                lastRow.dataset.imageManagerInit = '1';
+                initAttrImageManager(lastRow);
+            }
+        }, 50);
+    });
     </script>
     
 
