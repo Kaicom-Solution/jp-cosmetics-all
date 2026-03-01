@@ -10,6 +10,7 @@ class OrderItemResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'product' => new ProductMiniResource($this->whenLoaded('product')),
 
             'product_attribute' => new ProductAttributeMiniResource(
