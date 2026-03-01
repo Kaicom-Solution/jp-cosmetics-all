@@ -1,5 +1,6 @@
 import { FilterOption, ProductFilters } from "@/types";
-import { SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal, Check } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const DesktopFilters = ({
   filters,
@@ -17,78 +18,102 @@ const DesktopFilters = ({
   onPriceChange: (value: number) => void;
   onClearAll: () => void;
   activeFiltersCount: number;
-}) => (
-  <aside className="hidden lg:block lg:col-span-1">
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6 sticky top-28">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-          <SlidersHorizontal className="w-5 h-5 text-pink-600" />
-          Filters
-        </h2>
-        {activeFiltersCount > 0 && (
-          <button
-            onClick={onClearAll}
-            className="text-xs text-pink-600 hover:text-pink-700 font-semibold cursor-pointer"
-          >
-            Clear
-          </button>
-        )}
-      </div>
+}) => {
+  const searchParams = useSearchParams();
+  const categoryIdFromUrl = searchParams.get("category_id");
+  const brandIdFromUrl = searchParams.get("brand_ids");
 
-      {/* Category Filter */}
-      <div className="border-b border-gray-100 pb-6">
-        <h3 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide">
-          Category
-        </h3>
-        <div className="space-y-2.5">
-          {categories.map((cat) => (
-            <label
-              key={cat.id}
-              className="flex items-center gap-3 cursor-pointer group"
+  return (
+    <aside className="hidden lg:block lg:col-span-1">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6 sticky top-28">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+            <SlidersHorizontal className="w-5 h-5 text-pink-600" />
+            Filters
+          </h2>
+          {activeFiltersCount > 0 && (
+            <button
+              onClick={onClearAll}
+              className="text-xs text-pink-600 hover:text-pink-700 font-semibold cursor-pointer"
             >
-              <input
-                type="checkbox"
-                value={cat.name}
-                checked={filters.category.includes(cat.id.toString())}
-                onChange={() => onFilterChange("category", cat.id.toString())}
-                className="w-4 h-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500 focus:ring-2 cursor-pointer"
-              />
-              <span className="text-gray-700 group-hover:text-pink-600 transition-colors text-sm font-medium">
-                {cat.name}
-              </span>
-            </label>
-          ))}
+              Clear
+            </button>
+          )}
         </div>
-      </div>
 
-      {/* Brand Filter */}
-      <div className="border-b border-gray-100 pb-6">
-        <h3 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide">
-          Brand
-        </h3>
-        <div className="space-y-2.5">
-          {brands.map((brand) => (
-            <label
-              key={brand.id}
-              className="flex items-center gap-3 cursor-pointer group"
-            >
-              <input
-                type="checkbox"
-                value={brand.name}
-                checked={filters.brand.includes(brand.id.toString())}
-                onChange={() => onFilterChange("brand", brand.id.toString())}
-                className="w-4 h-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500 focus:ring-2 cursor-pointer"
-              />
-              <span className="text-gray-700 group-hover:text-pink-600 transition-colors text-sm font-medium">
-                {brand.name}
-              </span>
-            </label>
-          ))}
+        {/* Category Filter */}
+        <div className="border-b border-gray-100 pb-6">
+          <h3 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide">
+            Category
+          </h3>
+          <div className="space-y-2.5">
+            {categories.map((cat) => (
+              <label
+                key={cat.id}
+                className="flex items-center gap-3 cursor-pointer group"
+              >
+                <div className="relative w-4 h-4">
+                  <input
+                    type="checkbox"
+                    value={cat.name}
+                    checked={
+                      filters.category.includes(cat.id.toString()) ||
+                      categoryIdFromUrl == cat.id.toString()
+                    }
+                    onChange={() =>
+                      onFilterChange("category", cat.id.toString())
+                    }
+                    className="peer appearance-none w-full h-full border border-gray-300 rounded cursor-pointer checked:bg-pink-600 checked:border-pink-600"
+                  />
+
+                  <Check className="absolute top-0 left-0 inset-0 m-auto size-4 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" />
+                </div>
+                <span className="text-gray-700 group-hover:text-pink-600 transition-colors text-sm font-medium">
+                  {cat.name}
+                </span>
+              </label>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Price Range */}
-      {/* <div>
+        {/* Brand Filter */}
+        <div className="border-b border-gray-100 pb-6">
+          <h3 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide">
+            Brand
+          </h3>
+          <div className="space-y-2.5">
+            {brands.map((brand) => (
+              <label
+                key={brand.id}
+                className="flex items-center gap-3 cursor-pointer group"
+              >
+                <div className="relative w-4 h-4">
+                  <input
+                    type="checkbox"
+                    value={brand.name}
+                    checked={
+                      filters.brand.includes(brand.id.toString()) ||
+                      brandIdFromUrl === brand.id.toString()
+                    }
+                    onChange={() =>
+                      onFilterChange("brand", brand.id.toString())
+                    }
+                    className="peer appearance-none w-full h-full border border-gray-300 rounded cursor-pointer checked:bg-pink-600 checked:border-pink-600"
+                  />
+
+                  <Check className="absolute top-0 left-0 inset-0 m-auto size-4 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" />
+                </div>
+
+                <span className="text-gray-700 group-hover:text-pink-600 transition-colors text-sm font-medium">
+                  {brand.name}
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Price Range */}
+        {/* <div>
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">
             Price Range
@@ -118,8 +143,9 @@ const DesktopFilters = ({
           <span>BDT 1000</span>
         </div>
       </div> */}
-    </div>
-  </aside>
-);
+      </div>
+    </aside>
+  );
+};
 
 export default DesktopFilters;

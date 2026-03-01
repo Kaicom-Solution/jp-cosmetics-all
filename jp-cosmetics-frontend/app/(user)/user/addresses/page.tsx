@@ -48,8 +48,15 @@ function AddressesSection() {
     }
   };
 
-  const handleDeleteAddress = () => {
-    console.log("Deleted address");
+  const handleDeleteAddress = async (id: number) => {
+    try {
+      await addressService.remove(id);
+      setAddress((prev) => prev.filter((addr) => addr.id !== id));
+      showToast.success("Address deleted successfully!");
+    } catch (error) {
+      console.error("Failed to delete address:", error);
+      showToast.error("Failed to delete address. Please try again.");
+    }
   };
 
   const fetchAddress = async () => {
@@ -69,7 +76,7 @@ function AddressesSection() {
   }, []);
 
   return (
-    <Suspense fallback ={<UserLoader />}>
+    <Suspense fallback={<UserLoader />}>
       {loading && <UserLoader />}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 min-h-[53vh]">
         <div className="flex items-center justify-between mb-6">
@@ -130,7 +137,7 @@ function AddressesSection() {
       <ConfirmDeleteModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
-        onConfirm={handleDeleteAddress}
+        onConfirm={() => handleDeleteAddress(selectedAddress!.id)}
         addressTitle={selectedAddress?.title || ""}
         isDafault={selectedAddress?.is_default || 0}
       />

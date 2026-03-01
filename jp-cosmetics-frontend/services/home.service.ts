@@ -1,11 +1,18 @@
 import apiClient from "@/lib/axios";
-import { Brand, BusinessInfo, Category, FooterSlider, HeroSlider, Product } from "@/types";
+import {
+  Brand,
+  BusinessInfo,
+  Category,
+  FooterSlider,
+  HeroSlider,
+  Product,
+} from "@/types";
 
 // If you want to skip external API calls during a build (e.g. docker build),
 // set NEXT_PUBLIC_SKIP_FETCH_ON_BUILD=1 or NEXT_PHASE=development in the build env.
 const shouldSkipFetch = Boolean(
   process.env.NEXT_PUBLIC_SKIP_FETCH_ON_BUILD === "1" ||
-    process.env.NEXT_PHASE === "development"
+  process.env.NEXT_PHASE === "development",
 );
 
 export const getBusinessInfo = async (): Promise<BusinessInfo> => {
@@ -14,7 +21,7 @@ export const getBusinessInfo = async (): Promise<BusinessInfo> => {
   try {
     const response = await apiClient.get("/settings");
 
-const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
     // console.log("here it is");
     // console.log(baseURL);
@@ -91,7 +98,7 @@ export const getTrendingProducts = async (): Promise<Product[]> => {
   if (shouldSkipFetch) return [] as Product[];
 
   try {
-    const response = await apiClient.get("/trending-products"); 
+    const response = await apiClient.get("/trending-products");
     return response.data?.data;
   } catch (error) {
     console.warn("Failed to fetch Trending Products Info", error);
@@ -103,7 +110,7 @@ export const getPopularProducts = async (): Promise<Product[]> => {
   if (shouldSkipFetch) return [] as Product[];
 
   try {
-    const response = await apiClient.get("/popular-products"); 
+    const response = await apiClient.get("/popular-products");
     return response.data?.data;
   } catch (error) {
     console.warn("Failed to fetch Popular Products Info", error);

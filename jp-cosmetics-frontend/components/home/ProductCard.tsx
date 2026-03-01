@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Product } from "@/types";
 import { useCartStore } from "@/store/cart-store";
 import { showToast } from "@/utils/toast";
-import { wishListService } from "@/services/user.service";
 import { useWishlistStore } from "@/store/wishListStore";
 
 interface ProductCardProps {

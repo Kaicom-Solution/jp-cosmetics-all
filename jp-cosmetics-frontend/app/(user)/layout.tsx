@@ -13,7 +13,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { dashboardService } from "@/services/user.service";
 import { DashboardResponse } from "@/types/user";
 
@@ -24,8 +24,6 @@ interface SidebarItem {
   badge?: number | null;
   url: string;
 }
-
-
 
 export default function UserLayout({
   children,
@@ -41,34 +39,37 @@ export default function UserLayout({
   const [error, setError] = useState<string | null>(null);
 
   const sidebarItems: SidebarItem[] = [
-  { id: "overview", label: "Overview", icon: User, url: "/user/dashboard" },
-  {
-    id: "orders",
-    label: "My Orders",
-    icon: Package,
-    badge: dashboard?.total_orders || null,
-    url: "/user/orders",
-  },
-  {
-    id: "wishlist",
-    label: "Wishlist",
-    icon: Heart,
-    badge: dashboard?.wishlist_items || null,
-    url: "/user/wishlist",
-  },
-  { id: "addresses", label: "Addresses", icon: MapPin, url: "/user/addresses" },
-  // {
-  //   id: "rewards",
-  //   label: "Rewards",
-  //   icon: Gift,
-  //   badge: dashboard?.reward_points || null ,
-  //   url: "/user/rewards",
-  // },
-  { id: "settings", label: "Settings", icon: Settings, url: "/user/settings" },
-];
+    { id: "overview", label: "Overview", icon: User, url: "/user/dashboard" },
+    {
+      id: "orders",
+      label: "My Orders",
+      icon: Package,
+      badge: dashboard?.total_orders || null,
+      url: "/user/orders",
+    },
+    {
+      id: "wishlist",
+      label: "Wishlist",
+      icon: Heart,
+      badge: dashboard?.wishlist_items || null,
+      url: "/user/wishlist",
+    },
+    {
+      id: "addresses",
+      label: "Addresses",
+      icon: MapPin,
+      url: "/user/addresses",
+    },
 
+    {
+      id: "settings",
+      label: "Settings",
+      icon: Settings,
+      url: "/user/settings",
+    },
+  ];
 
-   useEffect(() => {
+  useEffect(() => {
     if (!user) return;
 
     const fetchDashboard = async () => {
