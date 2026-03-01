@@ -14,6 +14,7 @@ use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PromotionPopupController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SliderController;
@@ -229,6 +230,12 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/edit/{id}', [CouponController::class, 'edit'])->name('edit');
         Route::post('/update/{id}', [CouponController::class, 'update'])->name('update');
         Route::post('{id}/toggle-status', [CouponController::class, 'toggleStatus'])->name('toggleStatus');
+    });
+
+    Route::group(['prefix' => 'reviews', 'as' => 'reviews.', 'module' => 'reviews'], function () {
+        Route::get('/', [ReviewController::class, 'index'])->name('list');
+        Route::post('{orderDetail}/toggle-approve', [ReviewController::class, 'toggleApprove'])->name('toggleApprove');
+        Route::delete('{orderDetail}/destroy', [ReviewController::class, 'destroy'])->name('destroy');
     });
     
 });

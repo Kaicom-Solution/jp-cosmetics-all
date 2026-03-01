@@ -175,6 +175,19 @@
       </div>
     </a>
 
+    @hasPermission('reviews.list')
+    <a href="{{ route('reviews.list') }}"
+      class="cursor-pointer w-full list-none flex items-center gap-3 rounded-lg px-3 py-2.5 text-left
+              text-sm font-semibold text-slate-200 hover:text-white hover:bg-slate-700/50
+              ring-1 ring-transparent hover:ring-slate-600 transition
+              {{ request()->routeIs('reviews.*') ? 'bg-slate-700/60 text-white ring-slate-600' : '' }}">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 opacity-90">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+      </svg>
+      <span>Reviews</span>
+    </a>
+    @endHasPermission
+
 
 
   <!-- Settings (native dropdown, no JS) -->
