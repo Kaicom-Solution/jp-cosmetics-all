@@ -10,7 +10,6 @@ export default async function SingleProduct({
 
   const product = await getSingleProduct(slug); 
   const relatedProduct = await getRelatedProduct (slug)
-
   return (
     <>
       <ProductDetails product={product} relatedProduct={relatedProduct}/>

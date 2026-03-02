@@ -24,24 +24,21 @@ function AddressesSection() {
   const user = useAuthStore().user;
 
   const handleSaveAddress = async (data: AddressPayload) => {
-    // console.log("Saved address:", data);
-
     try {
       if (showAddModal) {
         const res = await addressService.create(data);
+        setAddress((prev) => [res, ...prev]);
       } else {
         if (!selectedAddress) return;
         const res = await addressService.update(selectedAddress.id, data);
+        setAddress((prev) =>
+          prev.map((addr) => (addr.id === selectedAddress.id ? res : addr)),
+        );
       }
-      fetchAddress();
       showToast.success(
         `Address ${showAddModal ? "add " : "update"} successfully`,
       );
     } catch (error) {
-      // console.error(
-      //   `Failed to ${showAddModal ? "add " : "update"} address`,
-      //   error
-      // );
       showToast.error(`Failed to ${showAddModal ? "add " : "update"} address`);
     } finally {
       setLoading(false);
@@ -64,7 +61,6 @@ function AddressesSection() {
       const data = await addressService.list();
       setAddress(data);
     } catch (error) {
-      // console.error("Failed to fetch orders", error);
       showToast.error("Failed to fetch address");
     } finally {
       setLoading(false);

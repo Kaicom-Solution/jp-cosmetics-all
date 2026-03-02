@@ -1,45 +1,58 @@
 "use client";
 
 import { useState } from "react";
+import apiClient from "@/lib/axios";
+import { showToast } from "@/utils/toast";
 
 type SubmitReviewProps = {
   productId: number | string;
   onSuccess?: () => void;
+  orderId: number | null;
 };
 
 export default function ReviewSubmitComponent({
   productId,
+  orderId,
   onSuccess,
 }: SubmitReviewProps) {
   const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
+  const [review, setReview] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async () => {
-    if (!rating || !comment.trim()) return;
+    if (!rating || rating <= 0) {
+      showToast.error("Please select a rating");
+      return;
+    }
+
+    if (!review.trim()) {
+      showToast.error("Please write a review");
+      return;
+    }
+
+    setSubmitting(true);
+
+    const payload = {
+      rating,
+      review: review.trim(),
+    };
 
     try {
-      setSubmitting(true);
+      const response = await apiClient.post(
+        `order/${orderId}/${productId}/review`,
+        payload,
+      );
 
-      // 🔥 Replace with your real API call
-      await fetch("/api/reviews", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          productId,
-          rating,
-          comment,
-        }),
-      });
+      showToast.success("Review submitted successfully");
 
       setRating(0);
-      setComment("");
+      setReview("");
 
       onSuccess?.();
-    } catch (err) {
-      console.error(err);
+    } catch (error: any) {
+      showToast.error(error?.response?.data?.message || "Something went wrong");
     } finally {
       setSubmitting(false);
     }
@@ -65,8 +78,8 @@ export default function ReviewSubmitComponent({
 
       {/* Comment */}
       <textarea
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
+        value={review}
+        onChange={(e) => setReview(e.target.value)}
         placeholder="Write your review..."
         className="w-full rounded-lg border border-gray-300 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
         rows={3}
@@ -75,7 +88,7 @@ export default function ReviewSubmitComponent({
       {/* Submit */}
       <div className="flex justify-end">
         <button
-          disabled={!rating || !comment.trim() || submitting}
+          disabled={!rating || !review.trim() || submitting}
           onClick={handleSubmit}
           className="rounded-lg bg-gradient-to-r from-pink-500 to-rose-600 px-4 py-1.5 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
         >
