@@ -46,6 +46,13 @@ class ProductDetailResource extends JsonResource
             'attributes' => ProductAttributeResource::collection($this->attributes),
 
             'attribute_images' => $attributeImages,
+            'reviews' => $this->approved_reviews->map(function ($detail) {
+                return [
+                    'customer_name' => $detail->order->customer->name ?? 'Anonymous',
+                    'rating'        => $detail->rating,
+                    'review'        => $detail->review,
+                ];
+            }),
         ];
     }
 }
