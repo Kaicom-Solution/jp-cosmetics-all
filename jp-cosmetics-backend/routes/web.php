@@ -17,6 +17,7 @@ use App\Http\Controllers\PromotionPopupController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SkinTypeController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishlistController;
@@ -154,6 +155,16 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('{id}/toggle-status', [BrandController::class, 'toggleStatus'])->name('toggleStatus');
         Route::delete('{id}/destroy', [BrandController::class, 'destroy'])->name('destroy');
 
+    });
+
+    Route::group(['prefix' => 'skin-type', 'as' => 'skin-type.', 'module' => 'skin-type'], function () {
+        Route::get('/', [SkinTypeController::class, 'list'])->name('list');
+        Route::get('/create', [SkinTypeController::class, 'create'])->name('create');
+        Route::post('/store', [SkinTypeController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [SkinTypeController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [SkinTypeController::class, 'update'])->name('update');
+        Route::post('{id}/toggle-status', [SkinTypeController::class, 'toggleStatus'])->name('toggleStatus');
+        Route::delete('{id}/destroy', [SkinTypeController::class, 'destroy'])->name('destroy');
     });
 
     Route::group(['prefix' => 'product', 'as' => 'product.', 'module' => 'product'], function () {
