@@ -400,7 +400,7 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
                 <div>
                   <span className="text-gray-600 block mb-1">Brands</span>
                   <p className="font-medium text-gray-900">
-                    {product.brand.name}
+                    {product.brand?.name || 'Non Brand'}
                   </p>
                 </div>
                 <div className="col-span-2">
@@ -571,7 +571,7 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
         </div>
 
         {/* Related Products */}
-        {relatedProduct.length > 0 && (
+        {relatedProduct?.length > 0 && (
           <div className="max-w-7xl mx-auto mt-12">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">
