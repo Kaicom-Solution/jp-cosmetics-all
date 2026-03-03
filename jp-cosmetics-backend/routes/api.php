@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\PromotionPopupController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SettingController;
+use App\Http\Controllers\Api\SkinTypeController;
 use App\Http\Controllers\Api\SliderController;
 use Illuminate\Support\Facades\Route;
 
@@ -118,6 +119,11 @@ Route::prefix('v1')->group(function () {
         Route::get('/{slug}', [BrandController::class, 'show']); // Single brand
     });
  
+    Route::group(['prefix' => 'skin-types', 'as' => 'skin-types.'], function () {
+        Route::get('/', [SkinTypeController::class, 'index']);   // List all
+        Route::get('/{slug}', [SkinTypeController::class, 'show']); // Single
+    });
+
     Route::group(['prefix' => 'coupon', 'as' => 'coupon.'], function () {
         Route::get('/', [CouponController::class, 'activeCoupons']);
         Route::get('/check', [CouponController::class, 'checkCoupon']);
