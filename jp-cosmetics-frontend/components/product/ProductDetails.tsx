@@ -2,18 +2,11 @@
 
 import React, { useRef, useState } from "react";
 import {
-  Star,
   Heart,
-  ShoppingCart,
-  Truck,
   ShieldCheck,
-  RotateCcw,
   ChevronRight,
   Minus,
   Plus,
-  Share2,
-  Check,
-  Sparkles,
   Flame,
   Package,
   Headphones,
@@ -37,7 +30,6 @@ interface responseProps {
 const ProductDetails = ({ product, relatedProduct }: responseProps) => {
   const addItem = useCartStore((state) => state.addItem);
   const { remove, add } = useWishlistStore();
-  const [selectedImage, setSelectedImage] = useState(0);
   const [main_image, setMainImage] = useState(product.primary_image);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -48,8 +40,6 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
   const [activeTab, setActiveTab] = useState<
     "description" | "ingredients" | "howto" | "reviews"
   >("description");
-
-  // const [relatedProduct , setRelatedProducts] = useState<RelatedProductList[]>([])
 
   const handleQuantityChange = (type: "increase" | "decrease") => {
     if (type === "increase") {
@@ -115,37 +105,6 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
     window.open(url, "_blank", "noopener,noreferrer,width=600,height=500");
   };
 
-  const reviews = [
-    {
-      name: "Alice",
-      initial: "A",
-      comment: "Great product, really loved it!",
-      rating: 5,
-      date: "2026-02-20",
-    },
-    {
-      name: "Bob",
-      initial: "B",
-      comment: "Service was okay, could be faster.",
-      rating: 3,
-      date: "2026-02-18",
-    },
-    {
-      name: "Charlie",
-      initial: "C",
-      comment: "Amazing experience, highly recommend!",
-      rating: 4,
-      date: "2026-02-15",
-    },
-    {
-      name: "Diana",
-      initial: "D",
-      comment: "Not bad, but expected better quality.",
-      rating: 2,
-      date: "2026-02-12",
-    },
-  ];
-
   return (
     <div className="bg-white min-h-screen">
       {/* Breadcrumb */}
@@ -167,12 +126,14 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
           <ChevronRight className="w-3.5 h-3.5" />
           <Link
             href={`/shop?page=1&category_id=${product.category.id}`}
-            className="hover:text-pink-600 transition-colors cursor-pointer"
+            className="hover:text-pink-600 transition-colors cursor-pointer line-clamp-1"
           >
             {product.category.name}
           </Link>
           <ChevronRight className="w-3.5 h-3.5" />
-          <span className="text-gray-900 font-medium">{product.name}</span>
+          <span className="text-gray-900 font-medium line-clamp-1">
+            {product.name}
+          </span>
         </div>
       </div>
 
@@ -499,17 +460,18 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
               >
                 How to Use
               </button>
-              <button
-                onClick={() => setActiveTab("reviews")}
-                className={`flex-shrink-0 py-4 px-6 font-semibold transition-colors cursor-pointer ${
-                  activeTab === "reviews"
-                    ? "text-pink-600 border-b-3 border-pink-600 bg-pink-50"
-                    : "text-gray-600 hover:text-pink-600 hover:bg-gray-50"
-                }`}
-              >
-                Reviews
-                {/* ({productData.reviewCount}) */}
-              </button>
+              {product.reviews.length > 0 && (
+                <button
+                  onClick={() => setActiveTab("reviews")}
+                  className={`flex-shrink-0 py-4 px-6 font-semibold transition-colors cursor-pointer ${
+                    activeTab === "reviews"
+                      ? "text-pink-600 border-b-3 border-pink-600 bg-pink-50"
+                      : "text-gray-600 hover:text-pink-600 hover:bg-gray-50"
+                  }`}
+                >
+                  Reviews ({product.reviews.length || 0})
+                </button>
+              )}
             </div>
 
             {/* Tab Content */}
@@ -546,25 +508,28 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
 
               {activeTab === "reviews" && (
                 <div className="space-y-4">
-                  {reviews.map((review, index) => (
+                  {product.reviews.map((review, index) => (
                     <div
                       key={index}
                       className="flex space-x-4 items-start bg-gray-50 p-4 rounded-lg shadow-sm"
                     >
                       <p className="w-10 h-10 flex justify-center items-center rounded-full bg-linear-to-r from-pink-500 to-pink-600 hover:from-pink-600 text-white font-bold text-lg">
-                        {review.initial}
+                        {review.customer_name?.slice(0, 1)}
                       </p>
                       <div className="flex-1">
                         <div className="flex justify-between items-center mb-1">
-                          <p className="font-semibold">{review.name}</p>
-                          <p className="text-sm text-gray-500">{review.date}</p>
+                          <p className="font-semibold">
+                            {review.customer_name}
+                          </p>
                         </div>
                         <div className="flex text-yellow-400 mb-1">
                           {Array.from({ length: 5 }, (_, i) => (
-                            <span key={i}>{i < review.rating ? "★" : "☆"}</span>
+                            <span key={i}>
+                              {i < review?.rating ? "★" : "☆"}
+                            </span>
                           ))}
                         </div>
-                        <p className="text-gray-700">{review.comment}</p>
+                        <p className="text-gray-700">{review.review}</p>
                       </div>
                     </div>
                   ))}

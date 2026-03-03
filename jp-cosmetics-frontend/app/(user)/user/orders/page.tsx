@@ -30,6 +30,7 @@ export default function OrdersSection() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [showOrderModal, setShowOrderModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<number | null>(null);
   const [orderDetails, setOrderDetails] = useState<OrderDetailResponse | null>(
     null,
   );
@@ -43,7 +44,6 @@ export default function OrdersSection() {
         const data = await orderService.list();
         setOrders(data);
       } catch (error) {
-        // console.error("Failed to fetch orders", error);
         showToast.error(`failed to get order list`);
       } finally {
         setLoading(false);
@@ -122,6 +122,7 @@ export default function OrdersSection() {
                     onClick={() => {
                       fetchOrderDetails(order.id);
                       setShowOrderModal(true);
+                      // setSelectedOrder(order.id)
                     }}
                     className="flex-1 px-4 py-2.5 border-2 border-pink-500 text-pink-600 rounded-xl font-semibold hover:bg-pink-50 transition-colors cursor-pointer"
                   >
@@ -142,6 +143,7 @@ export default function OrdersSection() {
           orderDetails={orderDetails}
           activeReviewIndex={activeReviewIndex}
           setActiveReviewIndex={setActiveReviewIndex}
+          // selectedOrder = {selectedOrder}
         />
       )}
     </Suspense>

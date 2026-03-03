@@ -1,5 +1,17 @@
 import { AlertTriangle } from "lucide-react";
-export function ConfirmDeleteModal({ isOpen, onClose, onConfirm, addressTitle ,isDafault }: { isOpen: boolean; onClose: () => void; onConfirm: () => void; addressTitle: string ; isDafault:number }) {
+export function ConfirmDeleteModal({
+  isOpen,
+  onClose,
+  onConfirm,
+  addressTitle,
+  isDafault,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  addressTitle: string;
+  isDafault: number;
+}) {
   if (!isOpen) return null;
 
   return (
@@ -13,9 +25,22 @@ export function ConfirmDeleteModal({ isOpen, onClose, onConfirm, addressTitle ,i
           <h2 className="text-xl font-bold text-gray-900 mb-2">
             Delete Address?
           </h2>
-          <p className="text-gray-600">
-            Are you sure you want to delete <span className="font-semibold text-gray-900">"{addressTitle}"</span> address? This action cannot be undone.
-          </p>
+          {isDafault ? (
+            <p className="text-gray-600">
+              You can not delete your default address{" "}
+              <span className="font-semibold text-gray-900">
+                "{addressTitle}" .
+              </span>{" "} If you want to delete set another default address.
+            </p>
+          ) : (
+            <p className="text-gray-600">
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-gray-900">
+                "{addressTitle}"
+              </span>{" "}
+              address? This action cannot be undone.
+            </p>
+          )}
         </div>
 
         {/* Action Buttons */}
@@ -27,12 +52,12 @@ export function ConfirmDeleteModal({ isOpen, onClose, onConfirm, addressTitle ,i
             Cancel
           </button>
           <button
-          disabled={isDafault == 1}
+            disabled={isDafault == 1}
             onClick={() => {
               onConfirm();
               onClose();
             }}
-            className={`flex-1 px-4 py-2.5 rounded-xl font-semibold  transition-colors ${isDafault == 1 ? 'bg-white text-black border border-gray-300 cursor-not-allowed' : 'bg-red-600 text-white hover:bg-red-700 cursor-pointer'}`}
+            className={`flex-1 px-4 py-2.5 rounded-xl font-semibold  transition-colors ${isDafault == 1 ? "bg-white text-black border border-gray-300 cursor-not-allowed" : "bg-red-600 text-white hover:bg-red-700 cursor-pointer"}`}
           >
             Delete
           </button>

@@ -41,6 +41,7 @@ export type ItemAttribute = {
 };
 
 export type OrderItem = {
+  id:number
   product: OrderProduct;
   product_attribute: ItemAttribute;
   quantity: number;
@@ -157,6 +158,7 @@ export type OrderListResponse = {
 };
 
 export type OrderDetailResponse = {
+  id:number,
   order: OrderDetail;
   items: OrderItem[];
   timeline: any[];

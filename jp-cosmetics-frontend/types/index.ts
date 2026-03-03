@@ -143,6 +143,11 @@ export interface SingleProduct {
     attribute_id: number;
     image: string;
   }>;
+  reviews:Array<{
+    customer_name:string,
+    rating:number,
+    review:string
+  }>
 }
 
 export interface ProductList {

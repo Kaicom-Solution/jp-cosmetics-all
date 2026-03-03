@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useState } from "react";
 import Image from "next/image";
 import {
   Mail,
@@ -8,7 +7,6 @@ import {
   Phone,
   Facebook,
   Twitter,
-  Send,
   InstagramIcon,
   Youtube,
 } from "lucide-react";
@@ -20,61 +18,12 @@ interface FooterProps {
 }
 
 export default function Footer({ data }: FooterProps) {
-  const [email, setEmail] = useState("");
-
-  const subscribe = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    alert(`Subscribed with: ${email}`);
-    setEmail("");
-  };
 
   const footerLogo = data?.footer_logo || "/assets/img/jp-cosmetica-logo.png";
 
   return (
     <footer className="bg-gradient-to-br from-pink-50 via-white to-rose-50">
-      {/* Newsletter Section */}
-      <div className="px-[5%] py-16 md:py-20">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-block mb-4 px-4 py-1.5 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full text-white text-xs font-semibold tracking-wide">
-            NEWSLETTER
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
-            Stay Beautiful with Our Newsletter
-          </h2>
-          <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-            Get exclusive beauty tips, product launches, and special offers
-            delivered straight to your inbox.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto">
-            <div className="relative flex-1">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                type="email"
-                placeholder="Enter your email address"
-                required
-                className="w-full pl-12 pr-4 py-4 rounded-xl bg-white text-sm border-2 border-gray-200 focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-100 transition-all shadow-sm"
-              />
-            </div>
-
-            <button
-              onClick={subscribe}
-              className="group relative overflow-hidden px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-rose-600 font-semibold text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
-            >
-              <span className="absolute inset-0 bg-gradient-to-r from-rose-600 to-pink-700 translate-x-full group-hover:translate-x-0 transition-transform duration-500"></span>
-              <span className="relative z-10 flex items-center justify-center gap-2">
-                Subscribe
-                <Send className="w-4 h-4" />
-              </span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Footer Content */}
+     
       <div className="border-t border-gray-200">
         <div className="px-[5%] py-12 md:py-16">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">

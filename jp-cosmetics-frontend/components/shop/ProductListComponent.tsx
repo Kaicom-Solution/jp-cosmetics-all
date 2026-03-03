@@ -1,8 +1,8 @@
 "use client";
 
 import ProductCard from "@/components/home/ProductCard";
-import React, { useState } from "react";
-import { SlidersHorizontal, X, ChevronDown, Filter } from "lucide-react";
+import { useState } from "react";
+import { ChevronDown, Filter } from "lucide-react";
 import { PaginationData, Product, ProductFilters } from "@/types";
 import ActiveFilterTags from "./ActiveFilterTags";
 import DesktopFilters from "./DesktopFilters";

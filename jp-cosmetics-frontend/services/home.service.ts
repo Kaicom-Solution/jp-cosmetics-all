@@ -75,7 +75,7 @@ export const getBrands = async (): Promise<Brand[]> => {
 
   try {
     const response = await apiClient.get("/brands");
-    return response.data?.data;
+    return response.data?.data.data;
   } catch (error) {
     console.warn("Failed to fetch Brands Info", error);
     return [] as Brand[];

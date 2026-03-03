@@ -19,7 +19,7 @@ export default function SubHeader({ user }: { user: any }) {
       setTimeout(() => {
         setCurrentIndex((prev) => (prev + 1) % notices.length);
         setAnimate(true);
-      }, 300); // duration of exit animation
+      }, 300);
     }, 3000);
 
     return () => clearInterval(interval);
