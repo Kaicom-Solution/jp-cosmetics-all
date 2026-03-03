@@ -9,16 +9,16 @@ use App\Http\Controllers\Controller;
 
 class BrandController extends Controller
 {
-    public function index()
+
+    public function index(Request $request)
     {
         try {
-            $brands = cache()->rememberForever('brands', function () {
-                return Brand::select('id', 'name', 'slug', 'logo', 'description', 'status')
-                    ->where('status', 1)
-                    ->orderBy('id', 'desc')
-                    ->get();
-                    
-            });
+            $perPage = $request->get('per_page', 15);
+
+            $brands = Brand::select('id', 'name', 'slug', 'logo', 'description', 'status')
+                ->where('status', 1)
+                ->orderBy('id', 'desc')
+                ->paginate($perPage);
 
             return $this->responseWithSuccess($brands, 'Brands fetched successfully');
 
@@ -26,6 +26,24 @@ class BrandController extends Controller
             return $this->responseWithError('Unable to fetch brands', $e->getMessage());
         }
     }
+
+    // public function index()
+    // {
+    //     try {
+    //         $brands = cache()->rememberForever('brands', function () {
+    //             return Brand::select('id', 'name', 'slug', 'logo', 'description', 'status')
+    //                 ->where('status', 1)
+    //                 ->orderBy('id', 'desc')
+    //                 ->get();
+                    
+    //         });
+
+    //         return $this->responseWithSuccess($brands, 'Brands fetched successfully');
+
+    //     } catch (Exception $e) {
+    //         return $this->responseWithError('Unable to fetch brands', $e->getMessage());
+    //     }
+    // }
 
     public function show($slug)
     {

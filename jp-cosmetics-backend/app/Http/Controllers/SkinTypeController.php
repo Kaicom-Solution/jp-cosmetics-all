@@ -45,7 +45,6 @@ class SkinTypeController extends Controller
         $data['slug'] = rand(1, 99999) . '-' . Str::of($data['name'])->slug('-');
 
         SkinType::create($data);
-        cache()->forget('skin_types');
 
         Toastr::success('Skin type created successfully.');
         return redirect()->route('skin-type.list');
@@ -79,7 +78,6 @@ class SkinTypeController extends Controller
         $data['slug'] = Str::of($data['name'])->slug('-');
 
         $skinType->update($data);
-        cache()->forget('skin_types');
 
         Toastr::success('Skin type updated successfully.');
         return redirect()->route('skin-type.list');
@@ -93,11 +91,9 @@ class SkinTypeController extends Controller
             if ($skinType->status) {
                 $skinType->status = false;
                 $skinType->save();
-                cache()->forget('skin_types');
             } else {
                 $skinType->status = true;
                 $skinType->save();
-                cache()->forget('skin_types');
             }
 
             Toastr::success('Status changed successfully.');
@@ -117,7 +113,6 @@ class SkinTypeController extends Controller
         }
 
         $skinType->delete();
-        cache()->forget('skin_types');
 
         Toastr::success('Skin type deleted successfully.');
         return redirect()->route('skin-type.list');
