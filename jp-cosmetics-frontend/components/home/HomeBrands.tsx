@@ -96,14 +96,14 @@ const HomeBrands = ({ brands }: { brands: Brand[] }) => {
               href={`/shop?page=1&brand_ids=${brand.id}`}
               className="keen-slider__slide h-full group relative flex flex-col items-center justify-center p-2 bg-white rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100"
             >
-              {/* Gradient background on hover */}
+             
               <div className="absolute inset-0 bg-gradient-to-br from-pink-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-pink-500/5 group-hover:via-purple-500/5 group-hover:to-pink-500/5 rounded-2xl transition-all duration-500"></div>
 
-              {/* Logo container */}
+              
               <div className="relative mb-4 w-50 h-50 max-w-full flex items-center justify-center overflow-clip">
                 <div className="absolute inset-0 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
                 <Image
-                  src={brand.logo}
+                  src={brand.logo || '/assets/img/brands/noimg.jpg'}
                   alt={brand.name}
                   className="relative w-full h-auto object-cover transition-all duration-500 scale-110 group-hover:scale-100"
                   width={250}
@@ -111,15 +111,14 @@ const HomeBrands = ({ brands }: { brands: Brand[] }) => {
                 />
               </div>
 
-              {/* Brand name */}
+   
               <h3 className="relative text-sm font-semibold text-gray-700 group-hover:text-pink-600 transition-colors duration-300 text-center">
                 {brand.name}
               </h3>
 
-              {/* Decorative underline */}
               <div className="mt-2 w-0 h-0.5 bg-gradient-to-r from-pink-500 to-purple-500 group-hover:w-12 transition-all duration-500"></div>
 
-              {/* Arrow indicator */}
+
               <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
                 <svg
                   className="w-4 h-4 text-pink-500"
