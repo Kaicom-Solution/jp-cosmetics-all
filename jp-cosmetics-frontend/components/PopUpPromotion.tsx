@@ -80,7 +80,6 @@ export default function PopUpPromotion() {
               {button_url && (
                 <Link
                   href={button_url}
-                  target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block bg-gradient-to-r from-pink-600 to-rose-600 text-white text-center px-6 py-2 rounded-lg hover:opacity-80 transition"
                 >
@@ -99,14 +98,13 @@ export default function PopUpPromotion() {
             {description && <p className="text-gray-600">{description}</p>}
 
             {button_url && (
-              <a
+              <Link
                 href={button_url}
-                target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition"
               >
                 {button_text || "Learn More"}
-              </a>
+              </Link>
             )}
           </div>
         )}
