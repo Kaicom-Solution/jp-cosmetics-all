@@ -1,5 +1,5 @@
 <!-- Sidebar -->
-<div id="sidebar" class="sidebar p-4 text-slate-100 space-y-1 border-r border-slate-700/60 shadow-xl" style="background-color: rgb(58, 3, 67)">
+<div id="sidebar" class="sidebar p-4 text-slate-100 space-y-1 border-r border-slate-700/60 shadow-xl h-[100vh] overflow-y-auto" style="background-color: rgb(58, 3, 67)">
     <!-- Header -->
     <div class="flex items-center justify-between pb-3 border-b border-slate-700/60">
       <div class="flex items-center gap-3">

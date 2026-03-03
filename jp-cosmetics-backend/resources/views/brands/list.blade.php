@@ -75,7 +75,7 @@
     <table class="table table-striped table-hover align-middle">
       <thead class="table-light">
         <tr>
-          <th class="small text-secondary">ID</th>
+          <th class="small text-secondary">SL</th>
           <th class="small text-secondary d-none d-sm-table-cell">Logo</th>
           <th class="small text-secondary">Name</th>
           <th class="small text-secondary d-none d-md-table-cell">Slug</th>
@@ -87,7 +87,10 @@
       <tbody>
         @forelse($brands as $brand)
           <tr>
-            <td>{{ $brand->id }}</td>
+            {{-- <td>{{ $brand->id }}</td> --}}
+            <td>
+              {{ $brands->firstItem() + $loop->index }}
+          </td>
             <td class="d-none d-sm-table-cell">
               <img class="brand-thumb"
                    src="{{ $brand->logo }}"

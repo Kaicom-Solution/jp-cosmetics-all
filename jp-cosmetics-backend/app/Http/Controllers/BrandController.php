@@ -20,7 +20,7 @@ class BrandController extends Controller
 
     public function list(Request $request){
 
-        $brands = Brand::orderBy('name')
+        $brands = Brand::orderBy('id', 'desc')
             ->paginate(15)
             ->withQueryString();
     
