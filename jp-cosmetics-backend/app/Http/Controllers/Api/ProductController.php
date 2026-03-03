@@ -8,6 +8,7 @@ use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductSearchResource;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\OrderDetail;
 use App\Models\Product;
 use App\Models\ProductAttribute;
 use Illuminate\Http\Request;
@@ -113,6 +114,13 @@ class ProductController extends Controller
         if (!$product) {
             return $this->responseWithError('Product not found', 404);
         }
+
+        $reviews = OrderDetail::with(['order.customer'])
+            ->where('product_id', $product->id)
+            ->where('is_approved_review', 1)
+            ->get();
+
+        $product->setRelation('approved_reviews', $reviews);
 
         return $this->responseWithSuccess(new ProductDetailResource($product));
     }

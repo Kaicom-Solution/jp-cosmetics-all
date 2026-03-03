@@ -12,6 +12,7 @@ class OrderDetailsResource extends JsonResource
         $currentActivity = $this->activities->first();
 
         return [
+            'id' => $this->id,
             'order' => [
                 'order_number'     => $this->order_number,
                 'sub_total_amount' => $this->sub_total_amount,
@@ -44,6 +45,7 @@ class OrderDetailsResource extends JsonResource
                 'remarks'    => $this->remarks,
                 'created_at' => $this->created_at,
             ],
+
 
             'items'    => OrderItemResource::collection($this->whenLoaded('details')),
             'timeline' => OrderTimelineResource::collection($this->whenLoaded('activities')),

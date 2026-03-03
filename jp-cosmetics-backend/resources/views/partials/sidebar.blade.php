@@ -1,5 +1,5 @@
 <!-- Sidebar -->
-<div id="sidebar" class="sidebar p-4 text-slate-100 space-y-1 border-r border-slate-700/60 shadow-xl" style="background-color: rgb(58, 3, 67)">
+<div id="sidebar" class="sidebar p-4 text-slate-100 space-y-1 border-r border-slate-700/60 shadow-xl h-[100vh] overflow-y-auto" style="background-color: rgb(58, 3, 67)">
     <!-- Header -->
     <div class="flex items-center justify-between pb-3 border-b border-slate-700/60">
       <div class="flex items-center gap-3">
@@ -108,6 +108,20 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 opacity-90"><path d="M10 6V8H6V18H4V8H0V6H10ZM12 6H14.5L17.4999 11.196L20.5 6H23V18H21V9.133L17.4999 15.196L14 9.135V18H12V6Z"></path></svg>
       <span>Brand</span>
     </div>
+  </a>
+
+  <!--Skin Type-->
+  <a href="{{ route('skin-type.list') }}"
+    class="menu-link block rounded-lg px-3 py-2.5 font-medium text-sm
+          hover:bg-slate-700/50 hover:text-white
+          ring-1 ring-transparent hover:ring-slate-600 transition
+          {{ request()->routeIs('skin-type.*') ? 'bg-slate-700/60 text-white ring-slate-600' : 'text-slate-200' }}">
+      <div class="flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 opacity-90">
+              <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+          </svg>
+          <span>Skin Type</span>
+      </div>
   </a>
 
     <!--Customer-->

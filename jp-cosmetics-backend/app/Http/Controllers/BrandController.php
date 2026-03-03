@@ -20,7 +20,7 @@ class BrandController extends Controller
 
     public function list(Request $request){
 
-        $brands = Brand::orderBy('name')
+        $brands = Brand::orderBy('id', 'desc')
             ->paginate(15)
             ->withQueryString();
     
@@ -45,7 +45,6 @@ class BrandController extends Controller
         $data['slug'] = rand(1, 99999) . '-' . Str::of($data['name'])->slug('-');
 
         Brand::create($data);
-        cache()->forget('brands');
 
         Toastr::success('Brand created successfully.');
         return redirect()->route('brand.list');
@@ -79,7 +78,6 @@ class BrandController extends Controller
         $data['slug'] = Str::of($data['name'])->slug('-');
 
         $brand->update($data);
-        cache()->forget('brands');
 
         Toastr::success('Brand updated successfully.');
         return redirect()->route('brand.list');
@@ -93,16 +91,14 @@ class BrandController extends Controller
             if ($brand->status) {
                 $brand->status = false;
                 $brand->save();
-                cache()->forget('brands');
             } else {
                 $brand->status = true;
                 $brand->save();
-                cache()->forget('brands');
             }
             Toastr::success('Status changed successfully.');
             return redirect()->route('brand.list');
         } catch (\Exception $e) {
-            Toastr::success('Status not changed');
+            Toastr::error('Status not changed');
             return redirect()->route('brand.list');
         }
     }
@@ -116,7 +112,6 @@ class BrandController extends Controller
         }
 
         $brand->delete();
-        cache()->forget('brands');
 
         Toastr::success('Brand deleted successfully.');
         return redirect()->route('brand.list');
