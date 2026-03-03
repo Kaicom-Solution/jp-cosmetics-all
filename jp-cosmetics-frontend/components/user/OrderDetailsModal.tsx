@@ -10,6 +10,7 @@ type Props = {
   orderDetails: OrderDetailResponse | null;
   activeReviewIndex: number | null;
   setActiveReviewIndex: (index: number | null) => void;
+  // selectedOrder:number | null
 };
 
 const statusColors: Record<string, string> = {
@@ -32,6 +33,7 @@ export const OrderDetailsModal = ({
   orderDetails,
   activeReviewIndex,
   setActiveReviewIndex,
+  // selectedOrder,
 }: Props) => {
   if (!isOpen || !orderDetails) {
     return null;
@@ -137,7 +139,8 @@ export const OrderDetailsModal = ({
                       </div>
                       {activeReviewIndex == index && (
                         <ReviewSubmitComponent
-                          productId={item.product?.id}
+                          productId={item?.id}
+                          orderId={orderDetails.id}
                           onSuccess={() => setActiveReviewIndex(null)}
                         />
                       )}
