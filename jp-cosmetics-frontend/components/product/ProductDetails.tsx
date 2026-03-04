@@ -333,19 +333,6 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
 
               {/* Quantity & Actions */}
               <div className="flex items-center gap-3 flex-wrap">
-                <button
-                  onClick={(e) => toggleWishlist(e, product.id)}
-                  className={`w-12 h-12 rounded-lg flex items-center justify-center border-2 transition-all cursor-pointer flex-shrink-0 ${
-                    isWishlisted
-                      ? "bg-pink-50 border-pink-500 text-pink-600"
-                      : "border-gray-300 text-gray-600 hover:border-pink-500 hover:text-pink-600"
-                  }`}
-                >
-                  <Heart
-                    className={`w-5 h-5 ${isWishlisted ? "fill-current" : ""}`}
-                  />
-                </button>
-
                 <div className="flex items-center border-2 border-gray-300 rounded-lg overflow-hidden flex-shrink-0">
                   <button
                     onClick={() => handleQuantityChange("decrease")}
@@ -371,6 +358,19 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
                 >
                   ADD TO CART
                 </button>
+
+                <button
+                  onClick={(e) => toggleWishlist(e, product.id)}
+                  className={`w-12 h-12 rounded-lg flex items-center justify-center border-2 transition-all cursor-pointer flex-shrink-0 ${
+                    isWishlisted
+                      ? "bg-pink-50 border-pink-500 text-pink-600"
+                      : "border-gray-300 text-gray-600 hover:border-pink-500 hover:text-pink-600"
+                  }`}
+                >
+                  <Heart
+                    className={`w-5 h-5 ${isWishlisted ? "fill-current" : ""}`}
+                  />
+                </button>
               </div>
 
               {/* Stock Status */}
@@ -384,11 +384,16 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
               {/* Brief Description */}
               <div className="bg-gray-50 rounded-lg p-4 space-y-3">
                 <h3 className="font-bold text-gray-900 text-base">
-                  Brief Description
+                  Short Description
                 </h3>
-                <p className="text-gray-700 text-sm leading-relaxed">
-                  {product.short_description}
-                </p>
+                <div
+                  dangerouslySetInnerHTML={
+                    product.short_description
+                      ? { __html: product.short_description }
+                      : undefined
+                  }
+                  className="text-gray-700 text-sm leading-relaxed"
+                />
               </div>
 
               {/* Product Info Grid */}
@@ -400,7 +405,7 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
                 <div>
                   <span className="text-gray-600 block mb-1">Brands</span>
                   <p className="font-medium text-gray-900">
-                    {product.brand?.name || 'Non Brand'}
+                    {product.brand?.name || "Non Brand"}
                   </p>
                 </div>
                 <div className="col-span-2">
@@ -477,11 +482,14 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
             {/* Tab Content */}
             <div className="p-6 lg:p-8">
               {activeTab === "description" && (
-                <div className="space-y-4">
-                  <p className="text-gray-700 leading-relaxed">
-                    {product.long_description}
-                  </p>
-                </div>
+                <div
+                  dangerouslySetInnerHTML={
+                    product.long_description
+                      ? { __html: product.long_description }
+                      : undefined
+                  }
+                  className="text-gray-700 leading-relaxed space-y-4"
+                />
               )}
 
               {activeTab === "ingredients" && (
@@ -489,9 +497,14 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
                   <h3 className="text-xl font-bold text-gray-900 mb-4">
                     Full Ingredients List
                   </h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    {product.ingredients}
-                  </p>
+                  <div
+                    dangerouslySetInnerHTML={
+                      product.ingredients
+                        ? { __html: product.ingredients }
+                        : undefined
+                    }
+                    className="text-gray-700 leading-relaxed space-y-4"
+                  />
                 </div>
               )}
 
@@ -500,9 +513,14 @@ const ProductDetails = ({ product, relatedProduct }: responseProps) => {
                   <h3 className="text-xl font-bold text-gray-900 mb-4">
                     How to Use
                   </h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    {product.how_to_use}
-                  </p>
+                  <div
+                    dangerouslySetInnerHTML={
+                      product.how_to_use
+                        ? { __html: product.how_to_use }
+                        : undefined
+                    }
+                    className="text-gray-700 leading-relaxed space-y-4"
+                  />
                 </div>
               )}
 

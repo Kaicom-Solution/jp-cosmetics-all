@@ -3,7 +3,7 @@
 import { X } from "lucide-react";
 import { useState, useEffect } from "react";
 import apiClient from "@/lib/axios";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Promotion {
   id: number;
@@ -17,6 +17,14 @@ interface Promotion {
 export default function PopUpPromotion() {
   const [showPromotion, setShowPromotion] = useState(false);
   const [promotion, setPromotion] = useState<Promotion | null>(null);
+  const router = useRouter();
+
+  const handleClick = (button_url: any) => {
+    setShowPromotion(false);
+    if (button_url) {
+      router.push(button_url);
+    }
+  };
 
   const getPopPromotion = async () => {
     try {
@@ -78,13 +86,12 @@ export default function PopUpPromotion() {
               {description && <p className="text-gray-600">{description}</p>}
 
               {button_url && (
-                <Link
-                  href={button_url}
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => handleClick(button_url)}
                   className="inline-block bg-gradient-to-r from-pink-600 to-rose-600 text-white text-center px-6 py-2 rounded-lg hover:opacity-80 transition"
                 >
                   {button_text || "Learn More"}
-                </Link>
+                </button>
               )}
             </div>
           </div>
@@ -98,13 +105,12 @@ export default function PopUpPromotion() {
             {description && <p className="text-gray-600">{description}</p>}
 
             {button_url && (
-              <Link
-                href={button_url}
-                rel="noopener noreferrer"
-                className="inline-block bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition"
+              <button
+                onClick={() => handleClick(button_url)}
+                className="inline-block bg-gradient-to-r from-pink-600 to-rose-600 text-white text-center px-6 py-2 rounded-lg hover:opacity-80 transition"
               >
                 {button_text || "Learn More"}
-              </Link>
+              </button>
             )}
           </div>
         )}

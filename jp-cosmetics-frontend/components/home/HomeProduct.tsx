@@ -1,15 +1,12 @@
-"use client";
 
-import React from "react";
-import { Star, ShoppingCart } from "lucide-react";
 import WebPageWrapper from "../WebPageWrapper";
 import Headline from "../Headline";
 import ProductCard from "./ProductCard";
 import { Product } from "@/types";
 import Link from "next/link";
 export default function HomeProduct({ products }: { products: Product[] }) {
-
   return (
+    
     <WebPageWrapper>
       <Headline
         className="mb-10 scroll-fade-up"
@@ -18,7 +15,7 @@ export default function HomeProduct({ products }: { products: Product[] }) {
       />
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
-        {products.slice(0,8).map((item, index) => (
+        {products.map((item, index) => (
           <ProductCard key={index} product={item} wishlisted={false}/>
         ))}
       </div>
