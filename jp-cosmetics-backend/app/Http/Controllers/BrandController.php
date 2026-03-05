@@ -42,7 +42,7 @@ class BrandController extends Controller
             $data['logo'] = $logoUploadResponse['public_path'];
         }
 
-        $data['slug'] = rand(1, 99999) . '-' . Str::of($data['name'])->slug('-');
+        $data['slug'] = Str::of($data['name'])->slug('-');
 
         Brand::create($data);
 

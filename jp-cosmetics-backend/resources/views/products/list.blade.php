@@ -95,7 +95,7 @@
         <table class="table table-striped table-hover align-middle">
             <thead class="table-light">
                 <tr>
-                    <th class="small text-secondary">ID</th>
+                    <th class="small text-secondary">SL</th>
                     <th class="small text-secondary d-none d-sm-table-cell">Image</th>
                     <th class="small text-secondary">Name</th>
                     <th class="small text-secondary d-none d-md-table-cell">Category</th>
@@ -108,7 +108,7 @@
             <tbody>
                 @forelse($products as $prod)
                     <tr>
-                        <td>{{ $prod->id }}</td>
+                        <td>{{ $products->firstItem() + $loop->index }}</td>
                         <td class="d-none d-sm-table-cell">
                             <img class="prod-thumb" src="{{ $prod->primary_image }}" alt="Product">
                         </td>

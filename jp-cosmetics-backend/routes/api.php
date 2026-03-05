@@ -67,8 +67,11 @@ Route::prefix('v1')->group(function () {
 
     Route::group(['prefix' => 'categories', 'as' => 'categories.'], function () {
         Route::get('/', [CategoryController::class, 'index']);
-        Route::get('/{slug}', [CategoryController::class, 'show']);
+        // Route::get('/{slug}', [CategoryController::class, 'show']);
         Route::get('/popular/list', [CategoryController::class, 'popularCategories']);
+
+        Route::get('/tree/{slug}', [CategoryController::class, 'tree']);
+        Route::get('/{slug}', [CategoryController::class, 'products']);
     });
  
     // Blog API Routes

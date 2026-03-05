@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use Exception;
-use App\Models\Product;
-use App\Models\Category;
-use App\Models\OrderDetail;
-use Illuminate\Http\Request;
-use App\Models\RequestProduct;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
+use App\Models\Category;
+use App\Models\OrderDetail;
+use App\Models\Product;
+use App\Models\ProductAttribute;
+use App\Models\RequestProduct;
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
@@ -33,7 +34,47 @@ class CategoryController extends Controller
         }
     }
 
-    public function show($slug): JsonResponse
+    // public function show($slug): JsonResponse
+    // {
+    //     try {
+    //         $category = Category::select('id', 'name', 'parent_id', 'slug', 'sequence', 'image', 'is_popular', 'description')
+    //             ->where('slug', $slug)
+    //             ->where('status', 1)
+    //             ->first();
+
+    //         if (!$category) {
+    //             return $this->responseWithError('Category not found', [], 404);
+    //         }
+
+    //         // find subcategory is there or not
+    //         $subCategories = Category::select('id', 'name', 'parent_id', 'slug', 'sequence', 'image', 'is_popular', 'description')
+    //             ->where('parent_id', $category->id)
+    //             ->where('status', 1)
+    //             ->orderBy('sequence', 'desc')
+    //             ->get();
+
+    //         if ($subCategories->isNotEmpty()) {
+    //             $category->type        = 'subcategories';
+    //             $category->children    = $subCategories;
+    //         } else {
+    //             $products = Product::select('id', 'name', 'slug', 'thumbnail', 'price', 'discount_price')
+    //                 ->where('category_id', $category->id)
+    //                 ->where('status', 1)
+    //                 ->orderBy('id', 'desc')
+    //                 ->paginate(15);
+
+    //             $category->type     = 'products';
+    //             $category->children = $products;
+    //         }
+
+    //         return $this->responseWithSuccess($category, 'Category fetched successfully', 200);
+
+    //     } catch (Exception $e) {
+    //         return $this->responseWithError('Something went wrong', [$e->getMessage()], 500);
+    //     }
+    // }
+
+    public function tree($slug): JsonResponse
     {
         try {
             $category = Category::select('id', 'name', 'parent_id', 'slug', 'sequence', 'image', 'is_popular', 'description')
@@ -45,84 +86,57 @@ class CategoryController extends Controller
                 return $this->responseWithError('Category not found', [], 404);
             }
 
-            // প্রথমে দেখো subcategory আছে কিনা
-            $subCategories = Category::select('id', 'name', 'parent_id', 'slug', 'sequence', 'image', 'is_popular', 'description')
-                ->where('parent_id', $category->id)
-                ->where('status', 1)
-                ->orderBy('sequence', 'desc')
-                ->get();
+            $category->children = $this->buildTree($category->id);
 
-            if ($subCategories->isNotEmpty()) {
-                // Subcategory থাকলে subcategory দাও
-                $category->type        = 'subcategories';
-                $category->children    = $subCategories;
-            } else {
-                // Subcategory না থাকলে সরাসরি products দাও
-                $products = Product::select('id', 'name', 'slug', 'thumbnail', 'price', 'discount_price')
-                    ->where('category_id', $category->id)
-                    ->where('status', 1)
-                    ->orderBy('id', 'desc')
-                    ->paginate(15);
-
-                $category->type     = 'products';
-                $category->children = $products;
-            }
-
-            return $this->responseWithSuccess($category, 'Category fetched successfully', 200);
+            return $this->responseWithSuccess($category, 'Category tree fetched successfully', 200);
 
         } catch (Exception $e) {
             return $this->responseWithError('Something went wrong', [$e->getMessage()], 500);
         }
     }
 
+    private function buildTree(int $parentId)
+    {
+        $children = Category::select('id', 'name', 'parent_id', 'slug', 'sequence', 'image', 'is_popular', 'description')
+            ->where('parent_id', $parentId)
+            ->where('status', 1)
+            ->orderBy('sequence', 'desc')
+            ->get();
 
+        foreach ($children as $child) {
+            $child->children = $this->buildTree($child->id); // recursive
+        }
 
-    // public function index(): JsonResponse
-    // {
-    //     try {
+        return $children;
+    }
 
-    //         $categories = Category::select('id', 'name', 'parent_id', 'slug', 'sequence', 'image', 'is_popular', 'description') 
-    //             ->where('status', 1)
-    //             ->orderBy('sequence', 'desc')
-    //             ->get();
+    public function products($slug): JsonResponse
+    {
+        try {
+            $products = Product::with(['category', 'brand', 'defaultAttribute'])
+                ->addSelect([
+                    'default_price' => ProductAttribute::select('unit_price')
+                        ->whereColumn('product_id', 'products.id')
+                        ->where('status', 1)
+                        ->where('is_default', 1)
+                        ->whereNotNull('unit_price')
+                        ->limit(1)
+                ])
+                ->whereHas('category', function ($query) use ($slug) {
+                    $query->where('slug', $slug);
+                })
+                ->where('status', 1)
+                ->orderBy('id', 'desc')
+                ->paginate(15);
 
-    //         $categories->transform(function ($category) {
-    //             $category->image = $category->image;
-    //             return $category;
-    //         });
+            $resource = ProductResource::collection($products)->response()->getData(true);
 
-    //         return $this->responseWithSuccess($categories, 'Category list fetched successfully', 200);
+            return $this->responseWithSuccess($resource, 'Products fetched successfully', 200);
 
-    //     } catch (Exception $e) {
-
-    //         return $this->responseWithError('Something went wrong', [$e->getMessage()], 500);
-    //     }
-    // }
-
-    /**
-     * Show single category by slug
-     */
-    // public function show($slug): JsonResponse
-    // {
-    //     try {
-
-    //         $category = Category::select('id', 'name', 'parent_id', 'slug', 'sequence', 'image', 'is_popular', 'description')
-    //             ->where('slug', $slug)
-    //             ->where('status', 1)
-    //             ->first();
-
-    //         if (!$category) {
-    //             return $this->responseWithError('Category not found', [], 404);
-    //         }
-
-    //         $category->image = $category->image;
-
-    //         return $this->responseWithSuccess($category, 'Category fetched successfully', 200);
-
-    //     } catch (Exception $e) {
-    //         return $this->responseWithError('Something went wrong', [$e->getMessage()], 500);
-    //     }
-    // }
+        } catch (Exception $e) {
+            return $this->responseWithError('Something went wrong', [$e->getMessage()], 500);
+        }
+    }
 
     public function popularCategories(): JsonResponse
     {

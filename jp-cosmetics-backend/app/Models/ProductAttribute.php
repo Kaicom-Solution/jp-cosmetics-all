@@ -13,6 +13,10 @@ class ProductAttribute extends Model
 
     protected $table = 'product_attributes';
 
+    protected $casts = [
+        'unit_price' => 'integer',
+    ];
+
     public function product()
     {
         return $this->belongsTo(Product::class);
