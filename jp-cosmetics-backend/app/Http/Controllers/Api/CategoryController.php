@@ -74,21 +74,23 @@ class CategoryController extends Controller
     //     }
     // }
 
-    public function tree($slug): JsonResponse
+    public function tree(): JsonResponse
     {
         try {
-            $category = Category::select('id', 'name', 'parent_id', 'slug', 'sequence', 'image', 'is_popular', 'description')
-                ->where('slug', $slug)
+            $rootCategories = Category::select('id', 'name', 'parent_id', 'slug', 'sequence', 'image', 'is_popular', 'description')
+                ->where(function($query) {
+                    $query->whereNull('parent_id')
+                        ->orWhere('parent_id', 0);
+                })
                 ->where('status', 1)
-                ->first();
+                ->orderBy('sequence', 'asc')
+                ->get();
 
-            if (!$category) {
-                return $this->responseWithError('Category not found', [], 404);
+            foreach ($rootCategories as $category) {
+                $category->children = $this->buildTree($category->id);
             }
 
-            $category->children = $this->buildTree($category->id);
-
-            return $this->responseWithSuccess($category, 'Category tree fetched successfully', 200);
+            return $this->responseWithSuccess($rootCategories, 'Category tree fetched successfully', 200);
 
         } catch (Exception $e) {
             return $this->responseWithError('Something went wrong', [$e->getMessage()], 500);
@@ -100,11 +102,11 @@ class CategoryController extends Controller
         $children = Category::select('id', 'name', 'parent_id', 'slug', 'sequence', 'image', 'is_popular', 'description')
             ->where('parent_id', $parentId)
             ->where('status', 1)
-            ->orderBy('sequence', 'desc')
+            ->orderBy('sequence', 'asc')
             ->get();
 
         foreach ($children as $child) {
-            $child->children = $this->buildTree($child->id); // recursive
+            $child->children = $this->buildTree($child->id);
         }
 
         return $children;

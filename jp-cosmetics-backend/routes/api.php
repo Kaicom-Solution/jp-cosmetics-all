@@ -70,7 +70,7 @@ Route::prefix('v1')->group(function () {
         // Route::get('/{slug}', [CategoryController::class, 'show']);
         Route::get('/popular/list', [CategoryController::class, 'popularCategories']);
 
-        Route::get('/tree/{slug}', [CategoryController::class, 'tree']);
+        Route::get('/tree', [CategoryController::class, 'tree']);
         Route::get('/{slug}', [CategoryController::class, 'products']);
     });
  
