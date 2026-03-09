@@ -18,19 +18,13 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-        $sort       = $request->query('sort');
-        $categoryId = $request->query('category_id');
-    
-        $brandIdsStr = $request->query('brand_ids');
-        $brandIds = [];
-    
-        if (!empty($brandIdsStr)) {
-            $brandIds = array_filter(array_map('intval', explode(',', $brandIdsStr)));
-        }
+        $sort = $request->query('sort');
+        $categorySlug = $request->query('category');
+        $brandSlug = $request->query('brand');
 
         $minPrice = $request->query('min_price');
         $maxPrice = $request->query('max_price');
-    
+
         $products = Product::with(['category', 'brand', 'defaultAttribute'])
             ->addSelect([
                 'default_price' => ProductAttribute::select('unit_price')
@@ -40,76 +34,106 @@ class ProductController extends Controller
                     ->whereNotNull('unit_price')
                     ->limit(1)
             ]);
-    
-        // if (!empty($categoryId)) {
-        //     $products->where('category_id', (int) $categoryId);
-        // }
-        if (!empty($categoryId)) {
-            $categoryIds = array_filter(array_map('intval', explode(',', $categoryId)));
-            $products->whereIn('category_id', $categoryIds);
+
+        /*
+    |--------------------------------------------------------------------------
+    | Category Filter
+    |--------------------------------------------------------------------------
+    */
+        if (!empty($categorySlug)) {
+
+            $category = Category::where('slug', $categorySlug)->first();
+
+            if ($category) {
+                $products->where('category_id', $category->id);
+            }
         }
 
-        if (!empty($brandIds)) {
-            $products->whereIn('brand_id', $brandIds);
+        /*
+    |--------------------------------------------------------------------------
+    | Brand Filter
+    |--------------------------------------------------------------------------
+    */
+        if (!empty($brandSlug)) {
+
+            $brand = Brand::where('slug', $brandSlug)->first();
+
+            if ($brand) {
+                $products->where('brand_id', $brand->id);
+            }
         }
 
+        /*
+    |--------------------------------------------------------------------------
+    | Price Filter
+    |--------------------------------------------------------------------------
+    */
         if ($minPrice !== null || $maxPrice !== null) {
+
             $products->whereHas('attributes', function ($q) use ($minPrice, $maxPrice) {
+
                 $q->where('status', 1)
-                  ->whereNotNull('unit_price');
-    
+                    ->whereNotNull('unit_price');
+
                 if ($minPrice !== null && $maxPrice !== null) {
-                    $q->whereBetween('unit_price', [(float) $minPrice, (float) $maxPrice]);
+                    $q->whereBetween('unit_price', [(float)$minPrice, (float)$maxPrice]);
                 } elseif ($minPrice !== null) {
-                    $q->where('unit_price', '>=', (float) $minPrice);
+                    $q->where('unit_price', '>=', (float)$minPrice);
                 } else {
-                    $q->where('unit_price', '<=', (float) $maxPrice);
+                    $q->where('unit_price', '<=', (float)$maxPrice);
                 }
             });
         }
 
+        /*
+    |--------------------------------------------------------------------------
+    | Sorting
+    |--------------------------------------------------------------------------
+    */
         switch ($sort) {
+
             case 'price_low':
                 $products->orderBy('default_price', 'asc');
                 break;
-    
+
             case 'price_high':
                 $products->orderBy('default_price', 'desc');
                 break;
-    
+
             case 'name_asc':
                 $products->orderBy('name', 'asc');
                 break;
-    
+
             case 'name_desc':
                 $products->orderBy('name', 'desc');
                 break;
-    
+
             case 'oldest':
                 $products->orderBy('id', 'asc');
                 break;
-    
+
             case 'newest':
             default:
                 $products->orderBy('id', 'desc');
                 break;
         }
-    
-        $results = $products->paginate(20)->appends($request->query());
-    
-        // return ProductResource::collection($results)->response()->getData(true);
+
+        $results = $products
+            ->paginate(20)
+            ->appends($request->query());
+
         return $this->responseWithSuccess(
-                ProductResource::collection($results)->response()->getData(true),
-                'Latest products fetched successfully',
-                200
-            );
+            ProductResource::collection($results)->response()->getData(true),
+            'Products fetched successfully',
+            200
+        );
     }
 
     public function show($slug)
     {
-        $product = Product::with(['category','brand','attributes.attribute_images'])
-                    ->where('slug', $slug)
-                    ->first();
+        $product = Product::with(['category', 'brand', 'attributes.attribute_images'])
+            ->where('slug', $slug)
+            ->first();
 
         if (!$product) {
             return $this->responseWithError('Product not found', 404);
@@ -143,18 +167,18 @@ class ProductController extends Controller
             $cat->parent,
             $cat
         ])
-        ->filter()
-        ->map(function ($c) {
-            return [
-                'id'   => $c->id,
-                'name' => $c->name,
-                'slug' => $c->slug ?? null,
-                'parent_id' => $c->parent_id,
-            ];
-        })
-        ->values();
+            ->filter()
+            ->map(function ($c) {
+                return [
+                    'id'   => $c->id,
+                    'name' => $c->name,
+                    'slug' => $c->slug ?? null,
+                    'parent_id' => $c->parent_id,
+                ];
+            })
+            ->values();
 
-        return $this->responseWithSuccess(['product' => $product->name, 'productSlug'=> $product->slug, 'categories' => $categories], "Product categories fetched.");
+        return $this->responseWithSuccess(['product' => $product->name, 'productSlug' => $product->slug, 'categories' => $categories], "Product categories fetched.");
     }
 
     public function search(Request $request)
@@ -168,7 +192,7 @@ class ProductController extends Controller
         $products = Product::with('defaultAttribute')
             ->where(function ($q) use ($query) {
                 $q->where('name', 'LIKE', "%{$query}%")
-                ->orWhere('slug', 'LIKE', "%{$query}%");
+                    ->orWhere('slug', 'LIKE', "%{$query}%");
             })
             ->paginate(5);
 
@@ -176,7 +200,7 @@ class ProductController extends Controller
         return $this->responseWithSuccess(ProductSearchResource::collection($products));
     }
 
-    
+
     // public function relatedProducts($slug)
     // {
     //     $product = Product::with(['category', 'brand'])
@@ -246,6 +270,4 @@ class ProductController extends Controller
             'brands'     => $brands,
         ]);
     }
-
-
 }
