@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { useState, useEffect } from "react";
 import apiClient from "@/lib/axios";
 import { useRouter } from "next/navigation";
+import { usePromotionPopupStore } from "@/store/usePromotionPopupStore";
 
 interface Promotion {
   id: number;
@@ -15,12 +16,13 @@ interface Promotion {
 }
 
 export default function PopUpPromotion() {
-  const [showPromotion, setShowPromotion] = useState(false);
+  const { showPromotion, checkCanShow, closePromotion } =
+    usePromotionPopupStore();
   const [promotion, setPromotion] = useState<Promotion | null>(null);
   const router = useRouter();
 
   const handleClick = (button_url: any) => {
-    setShowPromotion(false);
+    closePromotion();
     if (button_url) {
       router.push(button_url);
     }
@@ -33,15 +35,14 @@ export default function PopUpPromotion() {
 
       if (data) {
         setPromotion(data);
-        setShowPromotion(true);
       }
     } catch (error) {
       console.error(error);
-      setPromotion(null);
     }
   };
 
   useEffect(() => {
+    checkCanShow();
     getPopPromotion();
   }, []);
 
@@ -56,7 +57,7 @@ export default function PopUpPromotion() {
       <div className="max-w-4xl w-full bg-white rounded-xl relative overflow-hidden popup">
         {/* Close Button */}
         <X
-          onClick={() => setShowPromotion(false)}
+          onClick={closePromotion}
           className="absolute top-3 right-3 bg-red-500 text-white rounded-full p-1 cursor-pointer hover:rotate-90 duration-300 z-10"
         />
 
