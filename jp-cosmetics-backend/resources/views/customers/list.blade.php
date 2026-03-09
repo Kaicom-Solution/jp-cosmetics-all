@@ -73,7 +73,7 @@
         <table class="table table-striped table-hover align-middle">
             <thead class="table-light">
                 <tr>
-                    <th class="small text-secondary">ID</th>
+                    <th class="small text-secondary">SL</th>
                     <th class="small text-secondary d-none d-sm-table-cell">Image</th>
                     <th class="small text-secondary">Name</th>
                     <th class="small text-secondary d-none d-md-table-cell">Email</th>
@@ -85,7 +85,7 @@
             <tbody>
                 @forelse($customers as $customer)
                     <tr>
-                        <td>{{ $customer->id }}</td>
+                        <td>{{ $customers->firstItem() + $loop->index }}</td>
                         <td class="d-none d-sm-table-cell">
                             <img class="customer-thumb" src="{{ $customer->image}}" alt="Customer">
                         </td>

@@ -17,8 +17,9 @@ services:
   frontend:
     build:
       context: ./jp-cosmetics-frontend
+      dockerfile: Dockerfile
       args:
-        - NEXT_PUBLIC_SKIP_FETCH_ON_BUILD=1
+        NEXT_PUBLIC_SKIP_FETCH_ON_BUILD: "1"  
     container_name: frontend
     expose:
       - "3000"
@@ -62,11 +63,29 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root123
       MYSQL_DATABASE: jp_cosmetics
+    ports:
+      - "3306:3306"
     volumes:
       - dbdata:/var/lib/mysql
     networks:
       - app-network
     restart: always
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    links:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    ports:
+      - "8081:80"
+    networks:
+      - app-network
+    restart: always
+
 
 volumes:
   dbdata:

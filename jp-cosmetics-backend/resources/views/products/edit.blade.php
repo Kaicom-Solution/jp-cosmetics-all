@@ -118,7 +118,9 @@
                         <textarea name="short_description"
                                   class="form-control"
                                   rows="1"
+                                  maxlength="1200"
                                   placeholder="Enter a short description...">{{ old('short_description', $product->short_description) }}</textarea>
+                        <muted class="form-text">Max 1200 characters.</muted>
                         @error('short_description') <div class="text-danger">{{ $message }}</div> @enderror
                     </div>
         
@@ -144,7 +146,9 @@
                         <textarea name="ingredients"
                                   class="form-control"
                                   rows="4"
+                                  maxlength="1000"
                                   placeholder="Enter product ingredients...">{{ old('ingredients', $product->ingredients) }}</textarea>
+                                  <muted class="form-text">Max 1000 characters.</muted>
                         @error('ingredients') <div class="text-danger">{{ $message }}</div> @enderror
                     </div>
         
@@ -153,7 +157,9 @@
                         <textarea name="how_to_use"
                                   class="form-control"
                                   rows="4"
+                                  maxlength="1000"
                                   placeholder="Enter usage instructions...">{{ old('how_to_use', $product->how_to_use) }}</textarea>
+                                    <muted class="form-text">Max 1000 characters.</muted>
                         @error('how_to_use') <div class="text-danger">{{ $message }}</div> @enderror
                     </div>
                 </div>
@@ -197,7 +203,7 @@
                             </div>
                             <div class="col-md-2">
                                 <label class="form-label">Unit Price</label>
-                                <input type="number" step="0.01" name="attributes[{{ $idx }}][unit_price]" class="form-control" value="{{ $attr['unit_price'] ?? '' }}" required>
+                                <input type="number"  name="attributes[{{ $idx }}][unit_price]" class="form-control" value="{{ $attr['unit_price'] ?? '' }}" required>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-label">Stock</label>
@@ -369,7 +375,7 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Unit Price</label>
-                    <input type="number" step="0.01" name="attributes[${i}][unit_price]" class="form-control" placeholder="1299.00" required>
+                    <input type="number" name="attributes[${i}][unit_price]" class="form-control" placeholder="1299" required>
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Stock</label>

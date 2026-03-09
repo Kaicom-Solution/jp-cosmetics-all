@@ -39,7 +39,7 @@ class CategoryController extends Controller
             $data['image'] = $cloudImageUploadResponse['public_path'];
         }
         
-        $data['slug'] = rand(1, 99999) . '-' . Str::of($data['name'])->slug('-');
+        $data['slug'] = Str::of($data['name'])->slug('-');
 
         Category::create($data);
 

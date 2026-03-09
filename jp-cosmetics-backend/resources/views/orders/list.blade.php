@@ -82,7 +82,7 @@
         <table class="table table-striped table-hover align-middle">
             <thead class="table-light">
                 <tr>
-                    <th class="small text-secondary">ID</th>
+                    <th class="small text-secondary">SL</th>
                     <th class="small text-secondary">Order #</th>
                     <th class="small text-secondary d-none d-lg-table-cell">Customer</th>
                     <th class="small text-secondary text-end">Subtotal</th>
@@ -98,7 +98,7 @@
             <tbody>
                 @forelse($orders as $o)
                     <tr>
-                        <td>{{ $o->id }}</td>
+                            <td>{{ $o->id }}</td>
                         <td>
                             <div class="fw-semibold">{{ $o->order_number }}</div>
                             <div class="text-muted small d-lg-none">

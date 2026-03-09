@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use Exception;
-use App\Models\Brand;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductResource;
+use App\Models\Brand;
+use App\Models\Product;
+use App\Models\ProductAttribute;
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
@@ -27,35 +31,31 @@ class BrandController extends Controller
         }
     }
 
-    // public function index()
-    // {
-    //     try {
-    //         $brands = cache()->rememberForever('brands', function () {
-    //             return Brand::select('id', 'name', 'slug', 'logo', 'description', 'status')
-    //                 ->where('status', 1)
-    //                 ->orderBy('id', 'desc')
-    //                 ->get();
-                    
-    //         });
-
-    //         return $this->responseWithSuccess($brands, 'Brands fetched successfully');
-
-    //     } catch (Exception $e) {
-    //         return $this->responseWithError('Unable to fetch brands', $e->getMessage());
-    //     }
-    // }
-
-    public function show($slug)
+    public function show($slug): JsonResponse
     {
         try {
-            $brand = Brand::where('slug', $slug)
-                ->select('id', 'name', 'slug', 'logo', 'description', 'status')
-                ->firstOrFail();
 
-            return $this->responseWithSuccess($brand, 'Brand fetched successfully');
+            $products = Product::with(['category', 'brand', 'defaultAttribute'])
+                ->addSelect([
+                    'default_price' => ProductAttribute::select('unit_price')
+                        ->whereColumn('product_id', 'products.id')
+                        ->where('status', 1)
+                        ->where('is_default', 1)
+                        ->whereNotNull('unit_price')
+                        ->limit(1)
+                ])
+                ->wherehas('brand', function ($query) use ($slug) {
+                    $query->where('slug', $slug);
+                })
+                ->where('status', 1)
+                ->orderBy('id', 'desc')
+                ->paginate(15);
 
+            $resource = ProductResource::collection($products)->response()->getData(true);
+
+            return $this->responseWithSuccess($resource, 'Products fetched successfully', 200);
         } catch (Exception $e) {
-            return $this->responseWithError('Brand not found', $e->getMessage());
+            return $this->responseWithError('Something went wrong', [$e->getMessage()], 500);
         }
     }
 }
