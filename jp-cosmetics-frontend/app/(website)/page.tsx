@@ -6,6 +6,7 @@ import HomePromo from "@/components/home/HomePromo";
 import HomeReview from "@/components/home/HomeReview";
 import HomeTrending from "@/components/home/HomeTrending";
 import HomeUsp from "@/components/home/HomeUsp";
+import PopUpPromotion from "@/components/PopUpPromotion";
 import { getBrands, getCategories, getFooterSliders, getHeroSliders, getPopularCategories, getTrendingProducts ,getPopularProducts } from "@/services/home.service";
 
 
@@ -35,6 +36,7 @@ export default async function Home() {
         <HomeTrending products={trendingProducts} />
         <HomeReview />
         <HomePromo footerSliders={footerSliders} />
+        <PopUpPromotion/>
       </div>
   );
 }
