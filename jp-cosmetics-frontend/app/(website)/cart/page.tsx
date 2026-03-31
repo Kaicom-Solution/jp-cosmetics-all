@@ -1,15 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
 import {
   Trash2,
   Plus,
   Minus,
   ShoppingBag,
-  Tag,
   ArrowRight,
-  Heart,
-  X,
   Truck,
   ShieldCheck,
   Gift,
@@ -19,31 +15,20 @@ import Link from "next/link";
 import { useCartStore } from "@/store/cart-store";
 import { useAuthStore } from "@/store/authStore";
 
-
 const Cart = () => {
   const { items, updateQuantity, removeItem } = useCartStore();
-  const user = useAuthStore().user
-
-  const [promoCode, setPromoCode] = useState("");
-  const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
+  const user = useAuthStore().user;
 
   // ================== CALCULATIONS ==================
   const subtotal = items.reduce(
     (sum, item) => sum + item.unit_price * item.quantity,
-    0
+    0,
   );
 
   const discount = items.reduce((sum, item) => sum + item.discount_amount, 0);
 
-  const promoDiscount = appliedPromo ? subtotal * 0.1 : 0;
-  const shipping = 0;
-  const tax = 0;
+  const total = subtotal - discount ;
 
-  const total = subtotal - discount - promoDiscount + shipping + tax;
-
-  const freeShippingProgress = subtotal >= 50 ? 100 : (subtotal / 50) * 100;
-
-  const amountForFreeShipping = Math.max(0, 50 - subtotal);
 
   // ================== EMPTY CART ==================
   if (items.length === 0) {
@@ -77,23 +62,7 @@ const Cart = () => {
           </p>
         </div>
 
-        {/* Free Shipping */}
-        {amountForFreeShipping > 0 && (
-          <div className="mb-8 bg-white p-6 rounded-2xl border">
-            <div className="flex justify-between mb-2">
-              <span className="font-semibold">
-                Add BDT {amountForFreeShipping.toFixed(2)} for FREE shipping
-              </span>
-              <span>BDT {subtotal.toFixed(2)} / BDT 50</span>
-            </div>
-            <div className="h-3 bg-gray-200 rounded-full">
-              <div
-                className="h-full bg-pink-600 rounded-full"
-                style={{ width: `${freeShippingProgress}%` }}
-              />
-            </div>
-          </div>
-        )}
+        
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* CART ITEMS */}
@@ -141,7 +110,7 @@ const Cart = () => {
                           updateQuantity(
                             item.product_id,
                             item.product_attribute_id,
-                            item.quantity - 1
+                            item.quantity - 1,
                           )
                         }
                         disabled={item.quantity <= 1}
@@ -149,7 +118,9 @@ const Cart = () => {
                         <Minus />
                       </button>
 
-                      <p className="font-bold w-10 text-center">{item.quantity}</p>
+                      <p className="font-bold w-10 text-center">
+                        {item.quantity}
+                      </p>
 
                       <button
                         className="cursor-pointer hover:bg-pink-100 rounded-full hover:text-pink-600 duration-300 active:scale-75"
@@ -157,18 +128,13 @@ const Cart = () => {
                           updateQuantity(
                             item.product_id,
                             item.product_attribute_id,
-                            item.quantity + 1
+                            item.quantity + 1,
                           )
                         }
                       >
                         <Plus />
                       </button>
                     </div>
-
-                    {/* <button className="flex items-center gap-2 text-sm mt-4 cursor-pointer">
-                      <Heart className="w-4 h-4" />
-                      Move to Wishlist
-                    </button> */}
                   </div>
                 </div>
               </div>
@@ -181,38 +147,8 @@ const Cart = () => {
               <Sparkles className="text-pink-600" /> Order Summary
             </h2>
 
-            {/* Promo */}
-            {appliedPromo ? (
-              <div className="flex justify-between bg-pink-50 p-3 rounded-xl mb-4">
-                <span>{appliedPromo}</span>
-                <button onClick={() => setAppliedPromo(null)}>
-                  <X />
-                </button>
-              </div>
-            ) : (
-              <div className="flex gap-2 mb-4">
-                <input
-                  value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
-                  className="border px-3 py-2 rounded-xl w-full"
-                  placeholder="Promo code"
-                />
-                <button
-                  onClick={() => {
-                    if (promoCode) {
-                      setAppliedPromo(promoCode);
-                      setPromoCode("");
-                    }
-                  }}
-                  className="bg-black text-white px-4 rounded-xl active:scale-95 hover:bg-pink-700 duration-300 cursor-pointer"
-                >
-                  Apply
-                </button>
-              </div>
-            )}
-
             {/* PRICE */}
-            <div className="space-y-2 text-sm border-y py-4">
+            <div className="space-y-2 text-sm border-b border-gray-300 py-4">
               <div className="flex justify-between">
                 <span>Subtotal</span>
                 <span>BDT {subtotal.toFixed(2)}</span>
@@ -223,22 +159,6 @@ const Cart = () => {
                 <span>- BDT {discount.toFixed(2)}</span>
               </div>
 
-              {appliedPromo && (
-                <div className="flex justify-between text-green-600">
-                  <span>Promo</span>
-                  <span>- BDT {promoDiscount.toFixed(2)}</span>
-                </div>
-              )}
-
-              {/* <div className="flex justify-between">
-                <span>Shipping</span>
-                <span>{shipping === 0 ? "FREE" : `BDT ${shipping}`}</span>
-              </div> */}
-
-              {/* <div className="flex justify-between">
-                <span>Tax</span>
-                <span>BDT {tax.toFixed(2)}</span>
-              </div> */}
             </div>
 
             <div className="flex justify-between font-bold text-xl py-4">
@@ -251,6 +171,13 @@ const Cart = () => {
               className="w-full bg-pink-600 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2"
             >
               Checkout <ArrowRight />
+            </Link>
+
+             <Link
+              href="/shop"
+              className="w-full border-2 border-pink-600 text-pink-600 py-4 rounded-xl font-bold flex items-center justify-center gap-2 mt-5"
+            >
+              Continue Shopping
             </Link>
 
             {/* Trust */}

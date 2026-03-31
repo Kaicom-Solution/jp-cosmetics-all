@@ -4,7 +4,6 @@ export type ApiResponse<T> = {
   data: T;
 };
 
-
 // user type
 
 export type Profile = {
@@ -41,7 +40,7 @@ export type ItemAttribute = {
 };
 
 export type OrderItem = {
-  id:number
+  id: number;
   product: OrderProduct;
   product_attribute: ItemAttribute;
   quantity: number;
@@ -158,7 +157,7 @@ export type OrderListResponse = {
 };
 
 export type OrderDetailResponse = {
-  id:number,
+  id: number;
   order: OrderDetail;
   items: OrderItem[];
   timeline: any[];
@@ -189,7 +188,6 @@ export type AddressPayload = {
   status: number;
 };
 
-
 export type DashboardResponse = {
   total_orders: number;
   wishlist_items: number;
@@ -197,3 +195,13 @@ export type DashboardResponse = {
   total_spent: string;
 };
 
+export type Coupon = {
+  discount_value: number;
+  type: string;
+  id: number;
+};
+
+export type CuponResponse = {
+  success: true | false;
+  data: Coupon;
+};
