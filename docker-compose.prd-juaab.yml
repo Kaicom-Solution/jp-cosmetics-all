@@ -7,9 +7,11 @@ services:
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./jp-cosmetics-backend:/var/www/backend:ro
+      - ../juaab-web-app:/var/www/juaab-backend:ro
     depends_on:
       - frontend
       - backend
+      - juaab-backend
     networks:
       - app-network
     restart: always
@@ -43,6 +45,21 @@ services:
       - app-network
     restart: always
 
+  # New JUAAB Service
+  juaab-backend:
+    build: ../juaab-web-app
+    container_name: juaab-backend
+    working_dir: /var/www/juaab-backend
+    volumes:
+      - ../juaab-web-app:/var/www/juaab-backend
+    expose:
+      - "9000"
+    depends_on:
+      - db
+    networks:
+      - app-network
+    restart: always
+
   queue:
     build: ./jp-cosmetics-backend
     container_name: queue
@@ -50,6 +67,20 @@ services:
     command: php artisan queue:work --tries=3 --timeout=90
     volumes:
       - ./jp-cosmetics-backend:/var/www/backend
+    depends_on:
+      - db
+    networks:
+      - app-network
+    restart: always
+
+  # New JUAAB Queue
+  queue-juaab:
+    build: ../juaab-web-app
+    container_name: queue-juaab
+    working_dir: /var/www/juaab-backend
+    command: php artisan queue:work --tries=3 --timeout=90
+    volumes:
+      - ../juaab-web-app:/var/www/juaab-backend
     depends_on:
       - db
     networks:

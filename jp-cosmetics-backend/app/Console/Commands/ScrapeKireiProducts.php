@@ -39,6 +39,7 @@ class ScrapeKireiProducts extends Command
 
         foreach ($productLinks as $link) {
 
+        dd($link);
             $this->info("Scraping: " . $link);
 
             try {
