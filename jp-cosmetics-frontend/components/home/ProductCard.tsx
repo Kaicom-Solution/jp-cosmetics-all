@@ -1,5 +1,7 @@
+'use client'
+
 import React, { useState } from "react";
-import { Star, ShoppingCart, Heart, Eye, Sparkles } from "lucide-react";
+import { ShoppingCart, Heart } from "lucide-react";
 import Link from "next/link";
 import { Product } from "@/types";
 import { useCartStore } from "@/store/cart-store";

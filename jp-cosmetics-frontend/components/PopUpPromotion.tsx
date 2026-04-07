@@ -3,7 +3,8 @@
 import { X } from "lucide-react";
 import { useState, useEffect } from "react";
 import apiClient from "@/lib/axios";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { usePromotionPopupStore } from "@/store/usePromotionPopupStore";
 
 interface Promotion {
   id: number;
@@ -15,8 +16,17 @@ interface Promotion {
 }
 
 export default function PopUpPromotion() {
-  const [showPromotion, setShowPromotion] = useState(false);
+  const { showPromotion, checkCanShow, closePromotion } =
+    usePromotionPopupStore();
   const [promotion, setPromotion] = useState<Promotion | null>(null);
+  const router = useRouter();
+
+  const handleClick = (button_url: any) => {
+    closePromotion();
+    if (button_url) {
+      router.push(button_url);
+    }
+  };
 
   const getPopPromotion = async () => {
     try {
@@ -25,15 +35,14 @@ export default function PopUpPromotion() {
 
       if (data) {
         setPromotion(data);
-        setShowPromotion(true);
       }
     } catch (error) {
       console.error(error);
-      setPromotion(null);
     }
   };
 
   useEffect(() => {
+    checkCanShow();
     getPopPromotion();
   }, []);
 
@@ -48,7 +57,7 @@ export default function PopUpPromotion() {
       <div className="max-w-4xl w-full bg-white rounded-xl relative overflow-hidden popup">
         {/* Close Button */}
         <X
-          onClick={() => setShowPromotion(false)}
+          onClick={closePromotion}
           className="absolute top-3 right-3 bg-red-500 text-white rounded-full p-1 cursor-pointer hover:rotate-90 duration-300 z-10"
         />
 
@@ -78,13 +87,12 @@ export default function PopUpPromotion() {
               {description && <p className="text-gray-600">{description}</p>}
 
               {button_url && (
-                <Link
-                  href={button_url}
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => handleClick(button_url)}
                   className="inline-block bg-gradient-to-r from-pink-600 to-rose-600 text-white text-center px-6 py-2 rounded-lg hover:opacity-80 transition"
                 >
                   {button_text || "Learn More"}
-                </Link>
+                </button>
               )}
             </div>
           </div>
@@ -98,13 +106,12 @@ export default function PopUpPromotion() {
             {description && <p className="text-gray-600">{description}</p>}
 
             {button_url && (
-              <Link
-                href={button_url}
-                rel="noopener noreferrer"
-                className="inline-block bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition"
+              <button
+                onClick={() => handleClick(button_url)}
+                className="inline-block bg-gradient-to-r from-pink-600 to-rose-600 text-white text-center px-6 py-2 rounded-lg hover:opacity-80 transition"
               >
                 {button_text || "Learn More"}
-              </Link>
+              </button>
             )}
           </div>
         )}

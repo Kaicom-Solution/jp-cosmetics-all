@@ -193,11 +193,3 @@ export interface PaginationData {
   total: number;
 }
 
-
-// export interface RelatedProduct {
-//   id: number;
-//   name: string;
-//   slug: string;
-//   price: number;
-//   image: string;
-// }

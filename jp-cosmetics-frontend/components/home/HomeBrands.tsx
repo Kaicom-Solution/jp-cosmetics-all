@@ -89,12 +89,12 @@ const HomeBrands = ({ brands }: { brands: Brand[] }) => {
         )}
 
         {/* Slider Container */}
-        <div ref={sliderRef} className="keen-slider scroll-fade-up z-0">
+        <div ref={sliderRef} className="keen-slider scroll-fade-up z-0 py-5">
           {brands.map((brand, index) => (
             <Link
               key={brand.id || index}
-              href={`/shop?page=1&brand_ids=${brand.id}`}
-              className="keen-slider__slide h-full group relative flex flex-col items-center justify-center p-2 bg-white rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100"
+              href={`/shop?page=1&brand=${brand.slug}`}
+              className="keen-slider__slide h-full group relative flex flex-col items-center justify-center p-2 bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border border-gray-100"
             >
              
               <div className="absolute inset-0 bg-gradient-to-br from-pink-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-pink-500/5 group-hover:via-purple-500/5 group-hover:to-pink-500/5 rounded-2xl transition-all duration-500"></div>
