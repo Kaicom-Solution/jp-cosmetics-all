@@ -8,7 +8,8 @@ import type {
   UpdateProfilePayload,
   UpdatePasswordPayload,
   ApiResponse,
-  DashboardResponse
+  DashboardResponse,
+  CuponResponse
 } from "@/types/user";
 
 import type {Product} from "@/types/index"
@@ -92,6 +93,19 @@ export const dashboardService = {
     const res = await apiClient.get<{ data: DashboardResponse }>(
       "/customer/dashboard"
     );
+    return res.data.data;
+  },
+};
+
+export const couponService = {
+  async fetch(coupon: string) {
+    const res = await apiClient.get<{ data: CuponResponse }>(
+      "/coupon/check",
+      {
+        params: { coupon },
+      }
+    );
+
     return res.data.data;
   },
 };

@@ -10,12 +10,13 @@ import {
   Check,
   Truck,
   Shield,
+  NotepadText,
 } from "lucide-react";
 import { useCartStore } from "@/store/cart-store";
 import { useAuthStore } from "@/store/authStore";
 import apiClient from "@/lib/axios";
 import { Address } from "@/types/user";
-import { addressService } from "@/services/user.service";
+import { addressService, couponService } from "@/services/user.service";
 import { useRouter } from "next/navigation";
 import { showToast } from "@/utils/toast";
 import Link from "next/link";
@@ -26,6 +27,10 @@ export default function CheckoutPage() {
   const [selectedPayment, setSelectedPayment] = useState(0);
   const [promoCode, setPromoCode] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
+  const [promoCodeValue, setPromoCodeValue] = useState<number | null>(null);
+  const [promoCodeType, setPromoCodeType] = useState<string | null>(null);
+  const [promoCodeId, setPromoCodeId] = useState<number | null>(null);
+  const [note, setNote] = useState("");
 
   const { items, clearCart } = useCartStore();
 
@@ -56,21 +61,41 @@ export default function CheckoutPage() {
   // ================= CALCULATIONS =================
   const subtotal = items.reduce(
     (sum, item) => sum + item.unit_price * item.quantity,
-    0
+    0,
   );
 
   const discount = items.reduce((sum, item) => sum + item.discount_amount, 0);
 
-  const promoDiscount = promoApplied ? subtotal * 0.05 : 0; // 5% promo
-  const tax = 0; // 5% VAT
+  const value = promoCodeValue ?? 0;
+  const promoDiscount = promoApplied
+    ? promoCodeType === "fixed"
+      ? Math.min(value, subtotal)
+      : subtotal * (value / 100)
+    : 0;
+  const tax = 0;
 
   const total =
     subtotal - discount - promoDiscount + tax + selectedPaymentCharge;
 
-  const handleApplyPromo = () => {
-    if (promoCode.trim()) {
-      setPromoApplied(true);
+  const handleApplyPromo = async () => {
+    try {
+      const data = await couponService.fetch(promoCode);
+      if (data?.success == true) {
+        setPromoCodeValue(data?.data?.discount_value);
+        setPromoCodeType(data?.data?.type);
+        setPromoApplied(true);
+        setPromoCodeId(data.data.id);
+      } else {
+        showToast.error("Invalid Promo code");
+      }
+    } catch (error: any) {
+      showToast.error(error.message);
     }
+  };
+
+  const removePromo = () => {
+    setPromoApplied(false);
+    setPromoCode("");
   };
 
   const fetchAddress = async () => {
@@ -87,9 +112,6 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (user?.id) {
       fetchAddress();
-    }
-    else{
-      router.push("/login?redirect=/checkout");
     }
   }, [user]);
 
@@ -133,10 +155,11 @@ export default function CheckoutPage() {
       customer_address_id: selectedAddress?.id ?? null,
 
       payment_status: "pending",
-      payment_method: selectedPay.type, // "COD" | "online"
+      payment_method: selectedPay.type,
 
+      coupon_id: promoCodeId,
       delivery_charge: selectedPay.charge,
-      order_note: promoApplied ? `Promo applied: ${promoCode}` : null,
+      order_note: note,
     };
 
     try {
@@ -149,7 +172,7 @@ export default function CheckoutPage() {
     } catch (error: any) {
       showToast.error(
         error?.response?.data?.message ??
-          "Failed to place order. Please try again."
+          "Failed to place order. Please try again.",
       );
     }
   };
@@ -244,6 +267,19 @@ export default function CheckoutPage() {
               ))}
             </div>
 
+            <div className="bg-white rounded-2xl p-6 border">
+              <h2 className="text-xl font-bold flex items-center gap-2 mb-6">
+                <NotepadText /> Order Note
+              </h2>
+
+              <textarea
+                onChange={(e) => setNote(e.target.value)}
+                value={note}
+                placeholder="Write special instructions for your order"
+                className="border-2 rounded-xl p-4 w-full cursor-pointer border-pink-500 bg-pink-50"
+              ></textarea>
+            </div>
+
             {/* ORDER ITEMS */}
             <div className="bg-white rounded-2xl p-6 border">
               <h2 className="text-xl font-bold flex items-center gap-2 mb-6">
@@ -288,13 +324,22 @@ export default function CheckoutPage() {
                 placeholder="Promo code"
                 className="border px-3 py-2 rounded-xl w-full"
               />
-              <button
-                onClick={handleApplyPromo}
-                disabled={promoApplied}
-                className="bg-black text-white px-4 rounded-xl"
-              >
-                Apply
-              </button>
+              {promoApplied ? (
+                <button
+                  onClick={removePromo}
+                  className="bg-rose-500 hover:bg-rose-700 text-white px-4 rounded-xl cursor-pointer active:scale-95 duration-300"
+                >
+                  Remove
+                </button>
+              ) : (
+                <button
+                  onClick={handleApplyPromo}
+                  disabled={promoApplied || !promoCode}
+                  className="bg-black hover:bg-rose-600 text-white px-4 rounded-xl disabled:bg-gray-500 cursor-pointer active:scale-95 duration-300 disabled:cursor-not-allowed"
+                >
+                  Apply
+                </button>
+              )}
             </div>
 
             {/* PRICE */}

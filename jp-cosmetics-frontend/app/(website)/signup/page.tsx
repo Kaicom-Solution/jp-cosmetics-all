@@ -31,7 +31,7 @@ const Signup = () => {
   const [subscribeNewsletter, setSubscribeNewsletter] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
+    // email: "",
     phone: "",
     password: "",
     confirmPassword: "",
@@ -152,7 +152,7 @@ const Signup = () => {
                   </div>
                 </div>
 
-                <div>
+                {/* <div>
                   <label
                     htmlFor="email"
                     className="block text-sm font-semibold text-gray-900 mb-2"
@@ -172,7 +172,7 @@ const Signup = () => {
                       placeholder="john.doe@example.com"
                     />
                   </div>
-                </div>
+                </div> */}
 
                 <div>
                   <label
